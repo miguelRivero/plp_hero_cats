@@ -527,14 +527,9 @@ document.onreadystatechange = function () {
       let cur = [];
       // Get id of current scroll item
       for (let target of product_list_groups) {
-        console.log(target);
-        console.log($(target));
-        console.log($(target).position().top);
-        console.log($(target).offsetTop);
-        console.log(target.offsetTop);
-        let offsetTop = Math.ceil($(target).position().top);
+        //let offsetTop = Math.ceil(target.offsetTop);
         // if (offsetTop <= fromTop && offsetTop + $(target).height() > fromTop) {
-        if (offsetTop <= fromTop) {
+        if (target.offsetTop <= fromTop) {
           cur.push($(target));
         }
       }
@@ -582,7 +577,8 @@ document.onreadystatechange = function () {
             }
             btns[i].classList.add("custom-active");
             let safety_top_offset = getSafetyOffset(),
-              offsetTop = Math.ceil($("#" + link).position().top);
+              offsetTop = Math.ceil(document.getElementById(link).offsetTop);
+            //offsetTop = Math.ceil($("#" + link).position().top);
 
             if (last_slider_layout !== "sticky") {
               window.scrollTo(
@@ -591,12 +587,12 @@ document.onreadystatechange = function () {
               );
 
               window.setTimeout(function () {
-                offsetTop = Math.ceil($("#" + link).position().top);
+                offsetTop = Math.ceil(document.getElementById(link).offsetTop);
                 safety_top_offset = getSafetyOffset();
                 scrollAnimated(offsetTop - safety_top_offset);
                 setBtnActive(link);
                 toggleStickySlider();
-              }, 20);
+              }, 10);
             } else {
               scrollAnimated(offsetTop - safety_top_offset);
             }
@@ -604,22 +600,16 @@ document.onreadystatechange = function () {
         });
 
       function scrollAnimated(y) {
+        // To avoid duplicate firing (html and body)
         let gotDone = false;
-
-        $("html, body").animate(
-          {
-            scrollTop: y,
-          },
-          500,
-          function () {
-            if (!gotDone) {
-              gotDone = true;
-              window.setTimeout(function () {
-                window.addEventListener("scroll", scrollListener);
-              }, 20);
-            }
+        $("html, body").animate({ scrollTop: y }, 500, function () {
+          if (!gotDone) {
+            gotDone = true;
+            window.setTimeout(function () {
+              window.addEventListener("scroll", scrollListener);
+            }, 10);
           }
-        );
+        });
       }
     }
 
