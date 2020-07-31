@@ -25,6 +25,9 @@ document.onreadystatechange = function () {
       productsTitleElement = document.querySelector(products_title),
       product_list_groups = document.querySelectorAll(".ProductListGroup"),
       header_top = document.querySelector(".Header__top-wrapper"),
+      imagesStorage =
+        "https://raw.githubusercontent.com/miguelRivero/plp_hero_cats/master/dist/images/",
+      imagePlaceholder = imagesStorage + "placeholder.jpg",
       dynamic_banner = document.querySelector(".dynamic_banner");
 
     let stickySliderHeight,
@@ -208,7 +211,7 @@ document.onreadystatechange = function () {
           result.push({
             label: title,
             labelAsArray: titleAsArray,
-            image: "https://via.placeholder.com/80",
+            image: imagesStorage + text_id + ".jpg",
             id: id,
           });
         });
@@ -238,7 +241,9 @@ document.onreadystatechange = function () {
                 <div class="ProductListCategoriesSlider__item__button">
                   <img class="ProductListCategoriesSlider__item__image" src="${
                     category.image
-                  }" alt="${category.label}">
+                  }" onerror="this.src='${imagePlaceholder}'" alt="${
+                  category.label
+                }">
                   <div class="ProductListCategoriesSlider__item__title multiline">
                   ${category.labelAsArray
                     .map(
@@ -313,6 +318,13 @@ document.onreadystatechange = function () {
         slider.style.top = 0;
         sliderLayoutEvent.detail.sticky = "normal";
       }
+      console.log("toggleStickySlider");
+      console.log("getScrollTop() = " + getScrollTop());
+      console.log("sliderTopOffset = " + sliderTopOffset);
+      console.log(
+        "btnContainer.getBoundingClientRect().y = " +
+          btnContainer.getBoundingClientRect().y
+      );
       slider.dispatchEvent(sliderLayoutEvent);
       stickySliderHeight = btnContainer.getBoundingClientRect().height;
     }
