@@ -493,7 +493,7 @@ document.onreadystatechange = function () {
       // ==Detecting vertical scroll treshold and trigger==
       // ==================================================
       sliderTopOffset = getSliderTopOffset(header_top, dynamic_banner);
-      window.addEventListener("scroll", throttle(scrollListener, 500), false);
+      window.addEventListener("scroll", scrollListener);
       scrollToWithOffset();
       updateGlider();
       highlightSliderBtn();
@@ -563,7 +563,7 @@ document.onreadystatechange = function () {
         .querySelectorAll(".ProductListCategoriesSlider__item")
         .forEach((anchor, i) => {
           anchor.addEventListener("mouseup", function (e) {
-            window.removeEventListener("scroll", throttle(scrollListener));
+            window.removeEventListener("scroll", scrollListener);
 
             e.preventDefault();
 
@@ -606,11 +606,7 @@ document.onreadystatechange = function () {
           if (!gotDone) {
             gotDone = true;
             window.setTimeout(function () {
-              window.addEventListener(
-                "scroll",
-                throttle(scrollListener, 500),
-                false
-              );
+              window.addEventListener("scroll", scrollListener);
             }, 10);
           }
         });
@@ -653,18 +649,6 @@ document.onreadystatechange = function () {
     window.onresize = function (event) {
       updateGlider();
     };
-    function throttle(callback, limit) {
-      var wait = false;
-      return function (...args) {
-        if (!wait) {
-          callback(...args);
-          wait = true;
-          setTimeout(function () {
-            wait = false;
-          }, limit);
-        }
-      };
-    }
   }
 };
 // =====================================
