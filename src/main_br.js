@@ -13,7 +13,7 @@ require("file-loader?name=[name].[ext]!./index.html");
 var projectName = require("glider-js");
 var CustomSelect = require("vanilla-js-dropdown");
 import "./scss/style.scss";
-
+import throttle from "raf-throttle";
 // =====================================
 // ==DOCUMENT ONREADY==
 // =====================================
@@ -36,6 +36,7 @@ document.onreadystatechange = function () {
       last_slider_layout,
       tabs_display_style,
       categories = [],
+      tick = false,
       //bodyLastTopRect = document.body.getBoundingClientRect().top,
       sliderLayoutEvent = new CustomEvent("slider-sticky-state", {
         detail: { sticky: null },
@@ -73,7 +74,8 @@ document.onreadystatechange = function () {
         ".ProductListTechnologies__link"
       );
       if (technologies_groups.length) {
-        technologies_groups.forEach((technology) => {
+        for (const technology of technologies_groups) {
+          // technologies_groups.forEach((technology) => {
           const title = technology
             .querySelector(".ProductListTechnologies__name")
             .textContent.trim();
@@ -82,7 +84,7 @@ document.onreadystatechange = function () {
             label: title,
             value: id,
           });
-        });
+        }
       }
       return result;
     }
@@ -318,13 +320,13 @@ document.onreadystatechange = function () {
         slider.style.top = 0;
         sliderLayoutEvent.detail.sticky = "normal";
       }
-      console.log("toggleStickySlider");
-      console.log("getScrollTop() = " + getScrollTop());
-      console.log("sliderTopOffset = " + sliderTopOffset);
-      console.log(
-        "btnContainer.getBoundingClientRect().y = " +
-          btnContainer.getBoundingClientRect().y
-      );
+      // console.log("toggleStickySlider");
+      // console.log("getScrollTop() = " + getScrollTop());
+      // console.log("sliderTopOffset = " + sliderTopOffset);
+      // console.log(
+      //   "btnContainer.getBoundingClientRect().y = " +
+      //     btnContainer.getBoundingClientRect().y
+      // );
       slider.dispatchEvent(sliderLayoutEvent);
       stickySliderHeight = btnContainer.getBoundingClientRect().height;
     }
@@ -505,7 +507,8 @@ document.onreadystatechange = function () {
       // ==Detecting vertical scroll treshold and trigger==
       // ==================================================
       sliderTopOffset = getSliderTopOffset(header_top, dynamic_banner);
-      window.addEventListener("scroll", scrollListener);
+      //window.addEventListener("scroll", scrollRAF);
+      window.addEventListener("scroll", throttle(scrollListener));
       scrollToWithOffset();
       updateGlider();
       highlightSliderBtn();
@@ -523,6 +526,16 @@ document.onreadystatechange = function () {
       toggleStickySlider();
       checkSectionsAreIntoView();
     }
+
+    // function scrollRAF() {
+    //   if (!tick) {
+    //     window.requestAnimationFrame(function () {
+    //       scrollListener();
+    //       tick = false;
+    //     });
+    //     tick = true;
+    //   }
+    // }
 
     function getSafetyOffset() {
       return (
@@ -556,7 +569,8 @@ document.onreadystatechange = function () {
         const link = btn.getAttribute("data-link");
         if (id === link) {
           btn.classList.add("custom-active");
-          glider.scrollItem(i);
+          glider.scrollItem(i > 0 ? i - 1 : 0);
+          //console.log(i);
           updateURL(link);
         }
       });
@@ -568,62 +582,58 @@ document.onreadystatechange = function () {
       } else {
         location.hash = "#" + link;
       }
+      console.log(location.hash);
     }
+    const scrollToWithOffset = () => {
+      slider.addEventListener(
+        "click",
+        function (e) {
+          if (!e.target.closest(".ProductListCategoriesSlider__item")) {
+            return;
+          } else {
+            e.stopPropagation();
+            window.removeEventListener("scroll", throttle(scrollListener));
+            // const btn = e.target.closest(".ProductListCategoriesSlider__item");
+            // const link = btn.getAttribute("data-link");
 
-    function scrollToWithOffset() {
-      document
-        .querySelectorAll(".ProductListCategoriesSlider__item")
-        .forEach((anchor, i) => {
-          anchor.addEventListener("mouseup", function (e) {
-            window.removeEventListener("scroll", scrollListener);
+            //updateURL(link);
 
-            e.preventDefault();
-
-            const link = btns[i].getAttribute("data-link");
-
-            updateURL(link);
-            if (btnContainer.querySelector(".custom-active")) {
-              btnContainer
-                .querySelector(".custom-active")
-                .classList.remove("custom-active");
-            }
-            btns[i].classList.add("custom-active");
             let safety_top_offset = getSafetyOffset(),
               offsetTop = Math.ceil(document.getElementById(link).offsetTop);
-            //offsetTop = Math.ceil($("#" + link).position().top);
 
             if (last_slider_layout !== "sticky") {
               window.scrollTo(
                 window.scrollX,
                 offsetTop - safety_top_offset - 145
               );
-
               window.setTimeout(function () {
+                toggleStickySlider();
                 offsetTop = Math.ceil(document.getElementById(link).offsetTop);
                 safety_top_offset = getSafetyOffset();
                 scrollAnimated(offsetTop - safety_top_offset);
-                setBtnActive(link);
-                toggleStickySlider();
-              }, 10);
+              }, 50);
             } else {
               scrollAnimated(offsetTop - safety_top_offset);
             }
-          });
-        });
-
-      function scrollAnimated(y) {
-        // To avoid duplicate firing (html and body)
-        let gotDone = false;
-        $("html, body").animate({ scrollTop: y }, 500, function () {
-          if (!gotDone) {
-            gotDone = true;
-            window.setTimeout(function () {
-              window.addEventListener("scroll", scrollListener);
-            }, 10);
+            setBtnActive(link);
           }
-        });
-      }
-    }
+        },
+        true
+      );
+    };
+
+    const scrollAnimated = (y) => {
+      // To avoid duplicate firing (html and body)
+      let gotDone = false;
+      $("html, body").animate({ scrollTop: y }, 500, function () {
+        if (!gotDone) {
+          gotDone = true;
+          window.setTimeout(function () {
+            window.addEventListener("scroll", throttle(scrollListener));
+          }, 10);
+        }
+      });
+    };
 
     // ==================================================
     // ==END VERTICAL SCROLL ACTIVATING SLIDER BUTTONS===
