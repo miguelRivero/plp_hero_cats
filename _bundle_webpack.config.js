@@ -73,12 +73,8 @@ var config = {
           mangle: {
             toplevel: true,
           },
-          compress: {
-            drop_console: true,
-          },
           output: {
             beautify: false,
-            comments: false,
           },
         },
       }),

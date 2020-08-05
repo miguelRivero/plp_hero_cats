@@ -3,16 +3,20 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const mainJsFileVersion = "_br";
+const isDevelopment = process.env.NODE_ENV === "development";
+var path = require("path");
 
 var config = {
   context: __dirname + "/src", // `__dirname` is root of project and `/src` is source
   entry: {
-    app: ["./main" + mainJsFileVersion + ".js", "./scss/style.scss"],
+    app: ["./main" + mainJsFileVersion + ".js"],
+    style: ["./scss/style.scss"],
   },
   output: {
     path: __dirname + "/dist", // `/dist` is the destination
-    filename: "[name].js", // bundle created by webpack it will contain all our app logic. we will link to this .js file from our html page.
+    filename: "[name].min.js", // bundle created by webpack it will contain all our app logic. we will link to this .js file from our html page.
   },
   module: {
     rules: [
@@ -27,24 +31,17 @@ var config = {
         },
       },
       {
-        test: /\.css$/,
-        use: [
-          "style-loader", // the order is important. it executes in reverse order !
-          "css-loader", // this will load first !
-        ],
-      },
-      {
-        test: /\.scss$/,
-        use: [
-          "style-loader", // creates style nodes from JS strings
+        test: /\.s(a|c)ss$/,
+        exclude: /\.module.(s(a|c)ss)$/,
+        loader: [
+          isDevelopment ? "style-loader" : MiniCssExtractPlugin.loader,
+          "css-loader",
           {
-            loader: "css-loader", // translates CSS into CommonJS
+            loader: "sass-loader",
             options: {
-              importLoaders: 1,
+              sourceMap: isDevelopment,
             },
           },
-          "postcss-loader", // post process the compiled CSS
-          "sass-loader", // compiles Sass to CSS, using Node Sass by default
         ],
       },
       {
@@ -61,8 +58,15 @@ var config = {
       },
     ],
   },
+  resolve: {
+    extensions: [".js", ".jsx", ".scss"],
+  },
   plugins: [
     new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: isDevelopment ? "[name].css" : "[name].[hash].css",
+      chunkFilename: isDevelopment ? "[id].css" : "[id].[hash].css",
+    }),
     new CopyWebpackPlugin([{ from: "images", to: "images" }]),
   ],
   optimization: {
@@ -70,7 +74,16 @@ var config = {
       new UglifyJsPlugin({
         extractComments: true,
         uglifyOptions: {
-          mangle: true,
+          mangle: {
+            toplevel: true,
+          },
+          compress: {
+            drop_console: true,
+          },
+          output: {
+            beautify: false,
+            comments: false,
+          },
         },
       }),
       new OptimizeCSSAssetsPlugin({
