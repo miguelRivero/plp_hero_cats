@@ -40,9 +40,8 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "flickity": "^2.2.1",
-    "flickity-imagesloaded": "^2.0.0",
-    "glider-js": "^1.7.3",
+    "glider-js": "https://github.com/miguelRivero/Glider.js.git",
+    "raf-throttle": "^2.0.3",
     "vanilla-js-dropdown": "^2.2.0"
   }
 }
