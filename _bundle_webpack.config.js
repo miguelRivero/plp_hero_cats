@@ -3,7 +3,6 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const mainJsFileVersion = "_br";
 
 var config = {
   context: __dirname + "/src", // `__dirname` is root of project and `/src` is source

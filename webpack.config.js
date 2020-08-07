@@ -3,19 +3,20 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const isDevelopment = process.env.NODE_ENV === "development";
-var path = require("path");
 
 var config = {
   context: __dirname + "/src", // `__dirname` is root of project and `/src` is source
   entry: {
-    app: ["./main.js"],
-    style: ["./scss/slider.scss"],
+    app: [
+      "./main.js",
+      "./js/grid-list.js",
+      "./scss/slider.scss",
+      "./scss/grid.scss",
+    ],
   },
   output: {
     path: __dirname + "/dist", // `/dist` is the destination
-    filename: "[name].min.js", // bundle created by webpack it will contain all our app logic. we will link to this .js file from our html page.
+    filename: "[name].js", // bundle created by webpack it will contain all our app logic. we will link to this .js file from our html page.
   },
   module: {
     rules: [
@@ -30,17 +31,24 @@ var config = {
         },
       },
       {
-        test: /\.s(a|c)ss$/,
-        exclude: /\.module.(s(a|c)ss)$/,
-        loader: [
-          isDevelopment ? "style-loader" : MiniCssExtractPlugin.loader,
-          "css-loader",
+        test: /\.css$/,
+        use: [
+          "style-loader", // the order is important. it executes in reverse order !
+          "css-loader", // this will load first !
+        ],
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          "style-loader", // creates style nodes from JS strings
           {
-            loader: "sass-loader",
+            loader: "css-loader", // translates CSS into CommonJS
             options: {
-              sourceMap: isDevelopment,
+              importLoaders: 1,
             },
           },
+          "postcss-loader", // post process the compiled CSS
+          "sass-loader", // compiles Sass to CSS, using Node Sass by default
         ],
       },
       {
@@ -57,15 +65,8 @@ var config = {
       },
     ],
   },
-  resolve: {
-    extensions: [".js", ".jsx", ".scss"],
-  },
   plugins: [
     new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin({
-      filename: isDevelopment ? "[name].css" : "[name].[hash].css",
-      chunkFilename: isDevelopment ? "[id].css" : "[id].[hash].css",
-    }),
     new CopyWebpackPlugin([{ from: "images", to: "images" }]),
   ],
   optimization: {
@@ -76,12 +77,8 @@ var config = {
           mangle: {
             toplevel: true,
           },
-          compress: {
-            drop_console: true,
-          },
           output: {
             beautify: false,
-            comments: false,
           },
         },
       }),

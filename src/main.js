@@ -1,24 +1,27 @@
 // ==UserScript==
-// @name         PLP COFFEE -HERO + CATS
+// @name         COFEEE +  CATS UK
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  try to take over the world!
 // @author       You
-// @match        https://www.nespresso.com/br/en/order/capsules
+// @match        https://www.nespresso.com/br/en/order/capsules/original
 // @grant        none
-// @run-at       document-end
+// @require https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js
+
 // ==/UserScript==
+
+/* global $ */
 
 require("file-loader?name=[name].[ext]!./index.html");
 var projectName = require("glider-js");
 var CustomSelect = require("vanilla-js-dropdown");
 //import "./scss/slider.scss";
 import throttle from "raf-throttle";
-console.log("main");
 // =====================================
 // ==DOCUMENT ONREADY==
 // =====================================
 document.onreadystatechange = function () {
+  console.log("main");
   if (document.readyState == "complete") {
     // Get existing elements reference
     const products_title = ".ProductList__title",
