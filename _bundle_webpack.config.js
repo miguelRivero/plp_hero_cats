@@ -8,7 +8,7 @@ const mainJsFileVersion = "_br";
 var config = {
   context: __dirname + "/src", // `__dirname` is root of project and `/src` is source
   entry: {
-    app: ["./main" + mainJsFileVersion + ".js", "./scss/style.scss"],
+    app: ["./main.js", "./scss/slider.scss"],
   },
   output: {
     path: __dirname + "/dist", // `/dist` is the destination

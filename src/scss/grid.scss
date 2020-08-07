@@ -1,0 +1,167 @@
+@import "common";
+
+.Header__top-wrapper {
+  background: black;
+  max-width: none;
+}
+.ResponsiveContainer {
+  max-width: none;
+  & > div {
+    max-width: 996px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.ProductListGroup {
+  margin-left: 0;
+  margin-right: 0;
+}
+.ProductListGroup__title__content {
+  width: 100%;
+  background-color: black;
+  color: white;
+  font-size: 1rem;
+  font-weight: 300;
+  text-align: center;
+  letter-spacing: 1px;
+  line-height: 1.5rem;
+  padding: 2.5rem 1rem 8.5rem;
+  font-family: "NespressoLucas-light", Helvetica, Arial, sans-serif !important;
+
+  h3 {
+    font-size: 1.875rem;
+    line-height: 2.5rem;
+    text-transform: uppercase;
+    word-break: break-word;
+    padding: 0 2.5rem;
+    margin: 0;
+  }
+  p {
+    margin-top: 2rem;
+  }
+  a {
+    font-family: "NespressoLucas-bold", Helvetica, Arial, sans-serif !important;
+    color: white;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-top: 1.3125rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    display: none;
+  }
+}
+
+.ProductListContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: calc(100% - 2rem);
+  transform: translateY(-100px);
+  background: white;
+  margin: 0 1rem;
+  li {
+    width: 50%;
+    background-color: #f6f4f2;
+    border: 1px solid #e3e3e3;
+    border-top: 0;
+    padding: 1.5rem 0.5rem;
+    &:nth-child(even) {
+      border-left: 0;
+    }
+  }
+
+  &.grid {
+    .ProductListElement {
+      letter-spacing: 1px;
+      text-align: center;
+      border-top: 0;
+      padding: 0;
+    }
+    .ProductListElement__image {
+      width: auto;
+      display: block;
+      // text-align: center;
+    }
+    .ProductListElement__name {
+      width: 100%;
+      max-width: none;
+      margin-left: 0;
+      margin-top: 1rem;
+      color: #000000;
+      font-family: "NespressoLucas-bold", Helvetica, Arial, sans-serif !important;
+      font-size: 0.875rem;
+      // text-align: center;
+      // letter-spacing: 1px;
+      line-height: 1.3125rem;
+    }
+    .ProductListElement__headline {
+      width: 100%;
+      height: 3.375rem;
+    }
+    .ProductListElement__content {
+      margin-left: 0;
+    }
+    .ProductListElement__headline {
+      color: #000000;
+      font-family: "NespressoLucas-normal", Helvetica, Arial, sans-serif !important;
+      font-size: 0.875rem;
+      line-height: 1.125rem;
+      // text-align: center;
+      // letter-spacing: 1px;
+      margin: 0;
+    }
+    .AddToBagButton__container,
+    .ProductListElement__cup-size {
+      display: none;
+    }
+    .ProductListElement__price {
+      color: #3d8705;
+      font-family: "NespressoLucas-bold", Helvetica, Arial, sans-serif !important;
+      font-size: 1rem;
+      line-height: 1rem;
+      margin: 0 auto;
+      padding: 0;
+      text-align: center;
+      width: auto;
+      span {
+        color: #707070;
+        font-family: "NespressoLucas-normal", Helvetica, Arial, sans-serif !important;
+        font-size: 0.625rem;
+        text-align: center;
+      }
+    }
+  }
+  .ProductListElement__intensity {
+    margin: 0 0 1rem;
+    p {
+      color: #8f7247;
+      font-family: "NespressoLucas-bold", Helvetica, Arial, sans-serif !important;
+      font-size: 0.625rem;
+      line-height: 1rem;
+    }
+    .ProductListElement__progress {
+      width: 91px;
+      margin: 0 auto;
+      &Bar {
+        width: 100%;
+        background-color: rgba(143, 114, 71, 0.25);
+        padding: 1px;
+        border-radius: 1px;
+        &Fill {
+          display: block;
+          height: 2px;
+          background-color: #8f7247;
+          border-radius: 1px;
+          transition: width 500ms ease-in-out;
+        }
+      }
+    }
+  }
+}
+@media (min-width: $breakpoint-tablet) {
+  .ProductListGroup__title__content {
+    text-align: left;
+    padding-bottom: 13.375rem;
+  }
+}
