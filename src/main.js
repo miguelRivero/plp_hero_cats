@@ -17,6 +17,12 @@ var projectName = require("glider-js");
 var CustomSelect = require("vanilla-js-dropdown");
 //import "./scss/slider.scss";
 import throttle from "raf-throttle";
+import {
+  getPLPdata,
+  modCategoryTitle,
+  createCatContainer,
+} from "./js/grid-list";
+
 // =====================================
 // ==DOCUMENT ONREADY==
 // =====================================
@@ -675,6 +681,25 @@ document.onreadystatechange = function () {
     window.onresize = function (event) {
       updateGlider();
     };
+
+    // ==========================================================
+    // ================ SECOND PHASE ============================
+    // ==========================================================
+
+    // ==================================================
+    // == GRID / LIST LAYOUT ============================
+    // ==================================================
+    // Mod to the category title
+    const categoryTitle = document.querySelectorAll(".ProductListGroup__title");
+    [].forEach.call(categoryTitle, modCategoryTitle);
+
+    // Mod to the category items
+    for (let cat of product_list_groups) {
+      cat.appendChild(createCatContainer(cat));
+    }
+    // ==================================================
+    // == END GRID / LIST LAYOUT ========================
+    // ==================================================
   }
 };
 // =====================================

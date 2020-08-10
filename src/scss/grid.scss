@@ -1,17 +1,27 @@
 @import "common";
 
-.Header__top-wrapper {
-  background: black;
-  max-width: none;
-}
+// LAYOUT CHANGES FOR FULL WIDTH
 .ResponsiveContainer {
   max-width: none;
   & > div {
-    max-width: 996px;
-    margin-left: auto;
-    margin-right: auto;
+    &:not(.ProductList__content) {
+      max-width: 996px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    &.Header__top-wrapper {
+      background: black;
+      max-width: none;
+    }
   }
 }
+
+.ProductList__content {
+  & > div:not(.sticky) {
+    max-width: 996px;
+  }
+}
+// END LAYOUT CHANGES FOR FULL WIDTH
 
 .ProductListGroup {
   margin-left: 0;
@@ -62,6 +72,7 @@
   margin: 0 1rem;
   li {
     width: 50%;
+    max-width: 246px;
     background-color: #f6f4f2;
     border: 1px solid #e3e3e3;
     border-top: 0;
@@ -126,6 +137,7 @@
       width: auto;
       span {
         color: #707070;
+        display: block;
         font-family: "NespressoLucas-normal", Helvetica, Arial, sans-serif !important;
         font-size: 0.625rem;
         text-align: center;

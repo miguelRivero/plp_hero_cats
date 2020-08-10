@@ -7,26 +7,41 @@
 // =====================================
 // ==DOCUMENT ONREADY==
 // =====================================
+import "regenerator-runtime/runtime";
 import data from "./categories.json";
+import { getPLPData } from "./getPLPData.js";
 const categoriesData = data.categories;
-
-document.onreadystatechange = function () {
-  if (document.readyState == "complete") {
-    const categories = document.querySelectorAll(".ProductListGroup");
-
-    // Mod to the category title
-    const categoryTitle = document.querySelectorAll(".ProductListGroup__title");
-    [].forEach.call(categoryTitle, modCategoryTitle);
-
-    // Mod to the category items
-    for (let cat of categories) {
-      cat.appendChild(createCatContainer(cat));
-    }
-  }
+const getData = async () => {
+  let jsonData = await getPLPData();
+  return jsonData;
 };
+
+let products;
+getData().then((value) => {
+  //products = value.configuration.eCommerceData.products;
+  console.log(value);
+});
+
+// document.onreadystatechange = function () {
+//   if (document.readyState == "complete") {
+//     const categories = document.querySelectorAll(".ProductListGroup");
+
+//     // Mod to the category title
+//     const categoryTitle = document.querySelectorAll(".ProductListGroup__title");
+//     [].forEach.call(categoryTitle, modCategoryTitle);
+
+//     // Mod to the category items
+//     for (let cat of categories) {
+//       cat.appendChild(createCatContainer(cat));
+//     }
+//   }
+// };
 // =====================================
 // ==END DOCUMENT ONREADY==
 // =====================================
+const getPLPdata = () => {
+  getPLPData().then((data) => console.log(data));
+};
 const modCategoryTitle = (el) => {
   el.innerHTML = getCatTitleHTML(el);
 };
@@ -60,7 +75,6 @@ const createCatContainer = (el) => {
     //trnasform description case
     const descriptionEl = item.querySelector(".ProductListElement__headline");
     const description = descriptionEl.textContent || descriptionEl.innerText;
-    console.log(capitalize(description));
     descriptionEl.innerHTML = capitalize(description);
     //adding progress line
     const progress = createIntensityEl();
@@ -98,3 +112,5 @@ const capitalize = (s) => {
   if (typeof s !== "string") return "";
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 };
+
+export { modCategoryTitle, createCatContainer };

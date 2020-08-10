@@ -9,7 +9,7 @@ var config = {
   entry: {
     app: [
       "./main.js",
-      "./js/grid-list.js",
+      //"./js/grid-list.js",
       "./scss/slider.scss",
       "./scss/grid.scss",
     ],
@@ -27,6 +27,7 @@ var config = {
           loader: "babel-loader",
           options: {
             presets: ["@babel/preset-env"],
+            plugins: ["module:fast-async"],
           },
         },
       },
