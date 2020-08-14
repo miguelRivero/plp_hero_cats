@@ -12,6 +12,7 @@ var config = {
       //"./js/grid-list.js",
       "./scss/slider.scss",
       "./scss/grid.scss",
+      "./scss/addToCartButton.scss",
     ],
   },
   output: {
@@ -27,7 +28,7 @@ var config = {
           loader: "babel-loader",
           options: {
             presets: ["@babel/preset-env"],
-            plugins: ["module:fast-async"],
+            plugins: ["@babel/transform-runtime"],
           },
         },
       },

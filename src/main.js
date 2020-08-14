@@ -18,16 +18,16 @@ var CustomSelect = require("vanilla-js-dropdown");
 //import "./scss/slider.scss";
 import throttle from "raf-throttle";
 import {
-  getPLPdata,
   modCategoryTitle,
   createCatContainer,
+  resizeBackground,
 } from "./js/grid-list";
+import { getOriginalBtnData } from "./js/addToCartButton";
 
 // =====================================
 // ==DOCUMENT ONREADY==
 // =====================================
 document.onreadystatechange = function () {
-  console.log("main");
   if (document.readyState == "complete") {
     // Get existing elements reference
     const products_title = ".ProductList__title",
@@ -680,6 +680,7 @@ document.onreadystatechange = function () {
 
     window.onresize = function (event) {
       updateGlider();
+      resizeBackground();
     };
 
     // ==========================================================
@@ -689,14 +690,37 @@ document.onreadystatechange = function () {
     // ==================================================
     // == GRID / LIST LAYOUT ============================
     // ==================================================
-    // Mod to the category title
-    const categoryTitle = document.querySelectorAll(".ProductListGroup__title");
-    [].forEach.call(categoryTitle, modCategoryTitle);
+    // for (let title of document.querySelectorAll(".ProductListGroup__title")) {
+    //   modCategoryTitle(title);
+    // }
 
     // Mod to the category items
     for (let cat of product_list_groups) {
-      cat.appendChild(createCatContainer(cat));
+      // Mod to the category title
+      const title = cat.querySelector(".ProductListGroup__title");
+      const productGridContainer = document.createElement("div");
+      productGridContainer.classList.add("ProductListGroupContainer");
+
+      modCategoryTitle(title);
+
+      cat
+        .querySelector(".ProductListGroup__content")
+        .appendChild(createCatContainer(cat));
+
+      cat.appendChild(productGridContainer);
+      productGridContainer.appendChild(
+        cat.querySelector(".ProductListGroup__background--overflowed")
+      );
+      productGridContainer.appendChild(
+        cat.querySelector(".ProductListGroup__title")
+      );
+      productGridContainer.appendChild(
+        cat.querySelector(".ProductListGroup__content")
+      );
     }
+
+    resizeBackground();
+    getOriginalBtnData();
     // ==================================================
     // == END GRID / LIST LAYOUT ========================
     // ==================================================

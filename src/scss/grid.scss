@@ -1,64 +1,110 @@
 @import "common";
 
 // LAYOUT CHANGES FOR FULL WIDTH
-.ResponsiveContainer {
-  max-width: none;
-  & > div {
-    &:not(.ProductList__content) {
-      max-width: 996px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    &.Header__top-wrapper {
-      background: black;
-      max-width: none;
-    }
-  }
-}
+// .ResponsiveContainer {
+//   max-width: none;
+//   & > div {
+//     &:not(.ProductList__content) {
+//       max-width: 996px;
+//       margin-left: auto;
+//       margin-right: auto;
+//     }
+//     &.Header__top-wrapper {
+//       background: black;
+//       max-width: none;
+//     }
+//   }
+// }
 
-.ProductList__content {
-  & > div:not(.sticky) {
+// .ProductList__content {
+//   & > div:not(.ProductListGroup):not(.sticky) {
+//     margin: 0 auto;
+//   }
+//   & > div:not(.sticky) {
+//     max-width: 996px;
+//   }
+// }
+// END LAYOUT CHANGES FOR FULL WIDTH
+
+.ProductListGroupContainer {
+  margin-left: 0;
+  margin-right: 0;
+  position: relative;
+  & > div:not(.ProductListGroup__background--overflowed) {
+    margin: 0 auto;
     max-width: 996px;
   }
 }
-// END LAYOUT CHANGES FOR FULL WIDTH
-
-.ProductListGroup {
-  margin-left: 0;
-  margin-right: 0;
-}
-.ProductListGroup__title__content {
+.ProductListGroup__background--overflowed {
+  position: absolute;
   width: 100%;
-  background-color: black;
+  z-index: 0;
+  top: 0;
+  right: 0;
+  & > div {
+    height: 375px;
+    &:first-child {
+      display: inline-block;
+      background-color: black;
+      width: 100%;
+    }
+    &:last-child {
+      display: none;
+    }
+  }
+}
+.ProductListGroup__title {
+  color: #ffffff;
+  font-family: "NespressoLucas-light", Helvetica, Arial, sans-serif !important;
+  font-size: 1.875rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+  line-height: 2.5rem;
+  text-align: center;
+  position: relative;
+  float: none;
+  padding-top: 32px;
+  text-transform: uppercase;
+}
+
+.ProductListGroup__content {
+  z-index: 1;
+  position: relative;
+}
+
+.ProductListGroup__description {
+  width: 100%;
+  padding: 0;
   color: white;
   font-size: 1rem;
   font-weight: 300;
   text-align: center;
   letter-spacing: 1px;
   line-height: 1.5rem;
-  padding: 2.5rem 1rem 8.5rem;
+  padding: 1rem 1rem 8.5rem;
+  //padding: 2.5rem 1rem 8.5rem;
   font-family: "NespressoLucas-light", Helvetica, Arial, sans-serif !important;
-
-  h3 {
-    font-size: 1.875rem;
-    line-height: 2.5rem;
-    text-transform: uppercase;
-    word-break: break-word;
-    padding: 0 2.5rem;
-    margin: 0;
-  }
   p {
-    margin-top: 2rem;
+    margin-top: 0;
+    font-family: "NespressoLucas-light", Helvetica, Arial, sans-serif !important;
+    font-size: 1rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    line-height: 1.5rem;
   }
   a {
     font-family: "NespressoLucas-bold", Helvetica, Arial, sans-serif !important;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    line-height: 1.5rem;
+    margin-top: 21px;
+    display: none;
+    border-bottom: 1px solid white;
     color: white;
     font-weight: bold;
-    letter-spacing: 2px;
     margin-top: 1.3125rem;
     text-decoration: none;
     text-transform: uppercase;
-    display: none;
   }
 }
 
@@ -92,6 +138,7 @@
     .ProductListElement__image {
       width: auto;
       display: block;
+      position: relative;
       // text-align: center;
     }
     .ProductListElement__name {
@@ -105,13 +152,23 @@
       // text-align: center;
       // letter-spacing: 1px;
       line-height: 1.3125rem;
+      margin-bottom: 12px;
     }
     .ProductListElement__headline {
       width: 100%;
       height: 3.375rem;
     }
+
     .ProductListElement__content {
       margin-left: 0;
+    }
+    .ProductListElement__information {
+      margin-bottom: 8px;
+    }
+    .ProductListElement__information,
+    .ProductListElement__price {
+      width: 100%;
+      display: block;
     }
     .ProductListElement__headline {
       color: #000000;
@@ -122,7 +179,10 @@
       // letter-spacing: 1px;
       margin: 0;
     }
-    .AddToBagButton__container,
+    .limited_edition__text,
+    .ch_fairtrade-icon,
+    .ch_prodLabel,
+//    .AddToBagButton__container,
     .ProductListElement__cup-size {
       display: none;
     }
@@ -131,7 +191,7 @@
       font-family: "NespressoLucas-bold", Helvetica, Arial, sans-serif !important;
       font-size: 1rem;
       line-height: 1rem;
-      margin: 0 auto;
+      margin: 0 auto 23px;
       padding: 0;
       text-align: center;
       width: auto;
@@ -172,8 +232,55 @@
   }
 }
 @media (min-width: $breakpoint-tablet) {
-  .ProductListGroup__title__content {
+  .ProductListGroup__background--overflowed {
+    & > div {
+      height: 574px;
+      &:first-child {
+        width: 75%;
+      }
+      &:last-child {
+        display: inline-block;
+        background-color: grey;
+        width: 25%;
+      }
+    }
+  }
+  .ProductListGroup__content {
+    display: flex;
+    width: 100%;
+    padding-top: 82px;
+  }
+  .ProductListGroup__title {
+    font-size: 1.75rem;
+    letter-spacing: 6.22px;
     text-align: left;
-    padding-bottom: 13.375rem;
+    line-height: 3rem;
+    padding-top: 67px;
+    position: relative;
+    font-weight: 300;
+    margin: 0;
+  }
+
+  .ProductListGroup__description {
+    text-align: left;
+    padding-top: 0;
+    padding-left: 0;
+    width: 25%;
+    a {
+      display: inline-block;
+    }
+  }
+
+  .ProductListContainer {
+    background: none;
+    transform: none;
+    &.grid {
+      width: 75%;
+      margin: 0 0 0 29px;
+      li {
+        width: 33.333%;
+        max-width: none;
+      }
+    }
   }
 }
