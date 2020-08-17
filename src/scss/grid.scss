@@ -119,21 +119,27 @@
   li {
     width: 50%;
     max-width: 246px;
-    background-color: #f6f4f2;
     border: 1px solid #e3e3e3;
     border-top: 0;
-    padding: 1.5rem 0.5rem;
     &:nth-child(even) {
       border-left: 0;
     }
   }
 
   &.grid {
+    .ProductListElementFilter {
+      height: 100%;
+    }
     .ProductListElement {
       letter-spacing: 1px;
       text-align: center;
       border-top: 0;
-      padding: 0;
+      padding: 1.5rem 0.5rem;
+      background-color: #f6f4f2;
+      height: 100%;
+      &.ProductInBasket {
+        background-color: white;
+      }
     }
     .ProductListElement__image {
       width: auto;

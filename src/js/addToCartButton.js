@@ -21,36 +21,44 @@ const productAdded = (code, added) => {
 async function getOriginalBtnData() {
   const btns = document.querySelectorAll(".AddToBagButton");
   await getCartData().then((data) => {
-    console.log(data);
     for (let btn of btns) {
       let article = btn.closest("article"),
         increment = 10;
       if (article) {
         const product_code = article.getAttribute("data-product-code"),
+          disabled = btn.hasAttribute("disabled"),
           added = productAdded(product_code, data),
           btn_container = btn.closest(".AddToBagButton__container"),
+          hiddenText =
+            btn.querySelector(".VisuallyHidden").textContent ||
+            btn.querySelector(".VisuallyHidden").innerText,
           btn_id = btn.parentElement.getAttribute("id");
         let quantity = 0;
         if (added) {
           quantity = added.quantity;
           article.classList.add(".ProductInBasket");
         }
-
-        const new_btn_cont = document.createElement("div");
-        new_btn_cont.classList.add("AddToBagButton");
-        const new_btn = addStepperBtnElements(null, quantity, increment, added);
-        new_btn_cont.innerHTML = new_btn;
-        btn_container.firstChild.appendChild(new_btn_cont);
+        const new_btn = document.createElement("div");
+        new_btn.classList.add("AddToBagButton");
+        if (disabled) new_btn.setAttribute("disabled", "");
+        const new_btn_content = addStepperBtnElements(
+          null,
+          quantity,
+          increment,
+          added,
+          hiddenText
+        );
+        new_btn.innerHTML = new_btn_content;
+        btn_container.firstChild.appendChild(new_btn);
 
         //move to lastchild
         article.appendChild(btn_container);
 
-        //remove original click
-
+        //add click event
         btn_container.addEventListener(
           "click",
           function (event) {
-            stepperInput(event, btn_id, increment);
+            stepperInput(event, btn_id, increment, disabled);
           },
           false
         );
@@ -59,24 +67,21 @@ async function getOriginalBtnData() {
   });
 }
 
-const addStepperBtnElements = (id, q, increase, added) => {
+const addStepperBtnElements = (id, q, increase, added, hiddenTxt, disabled) => {
   return `
-  <div class="AddToBagButton">
-    <span class="VisuallyHidden">
-      You have ${q} of Our Favourites 50 Capsule Coffee Assortment in your basket. Activate to add the product
-    </span>
-    <div class="AddToBagButton__stepper ${!added ? "empty" : ""}">
+    <span class="VisuallyHidden">${hiddenTxt}</span>
+    <div class="AddToBagButton__stepper ${!added ? "empty" : "incart"}">
     <button class="AddToBagButton__decrease" value="decrease">–</button>
     <input type="number" class="AddToBagButton__input" value="${q}" min="0" max="100" step="${increase}"/>
     <button class="AddToBagButton__increase" value="increase">+</button>
+    <button class="AddToBagButton__incart" value="incart">${q}</button>
     <button class="AddToBagButton__empty" value="empty">BUY</button>
-    </div>
-  </div>
     `;
 };
 
-const stepperInput = (event, id, inc) => {
+const stepperInput = (event, id, inc, disable) => {
   event.stopPropagation();
+  if (disable) return false;
   let btn_value = event.target.value;
   let min = 0,
     max = 100,
@@ -87,12 +92,13 @@ const stepperInput = (event, id, inc) => {
     new_value = val,
     surplus = val % inc;
 
-  console.log(val);
-  console.log(btn_value);
   switch (btn_value) {
     case "empty":
       stepper.classList.remove("empty");
       new_value = 0;
+      break;
+    case "incart":
+      stepper.classList.remove("incart");
       break;
     case "decrease":
       new_value = surplus ? val - surplus : val >= inc ? val - inc : min;

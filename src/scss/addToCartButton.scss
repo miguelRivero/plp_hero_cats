@@ -29,6 +29,13 @@ input:invalid {
 
 .AddToBagButton {
   border: none;
+  &[disabled] {
+    button {
+      background-color: #e3e3e3;
+      color: #707070;
+      pointer-events: none;
+    }
+  }
 }
 .AddToBagButton__stepper {
   display: inline-block;
@@ -44,30 +51,49 @@ input:invalid {
     border-radius: 50%;
     background: #3d8705;
     color: white;
-    font-weight: 300;
-    //line-height: 40px;
-    font-size: 1.4rem;
+    font-family: "NespressoLucas-light", Helvetica, Arial, sans-serif !important;
+    line-height: 2rem;
+    font-size: 2rem;
     padding: 0.2rem;
     border: none;
     position: absolute;
     top: 0;
   }
+  .AddToBagButton__incart,
+  .AddToBagButton__empty {
+    font-size: 1rem;
+    font-family: "NespressoLucas-normal", Helvetica, Arial, sans-serif !important;
+    letter-spacing: 0.0938rem;
+    line-height: 1rem;
+    text-align: center;
+    width: 100%;
+  }
+  &.incart,
   &.empty {
     .AddToBagButton__increase {
       width: 100%;
       border-radius: 24px;
     }
+  }
+  &.incart {
+    .AddToBagButton__incart {
+      display: block;
+    }
+    .AddToBagButton__empty {
+      display: none;
+    }
+  }
+  &.empty {
+    .AddToBagButton__incart {
+      display: none;
+    }
     .AddToBagButton__empty {
       display: block;
-      font-size: 1rem;
-      font-family: "NespressoLucas-normal", Helvetica, Arial, sans-serif !important;
-      letter-spacing: 0.0938rem;
-      line-height: 1rem;
-      text-align: center;
-      width: 100%;
     }
   }
 }
+
+.AddToBagButton__incart,
 .AddToBagButton__empty {
   display: none;
 }
