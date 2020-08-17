@@ -4,15 +4,13 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const mainJsFileVersion = "_br";
 const isDevelopment = process.env.NODE_ENV === "development";
-var path = require("path");
 
 var config = {
   context: __dirname + "/src", // `__dirname` is root of project and `/src` is source
   entry: {
-    app: ["./main" + mainJsFileVersion + ".js"],
-    style: ["./scss/style.scss"],
+    app: ["./main.js"],
+    style: ["./scss/slider.scss"],
   },
   output: {
     path: __dirname + "/dist", // `/dist` is the destination
