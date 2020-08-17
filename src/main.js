@@ -38,6 +38,7 @@ document.onreadystatechange = function () {
       imagesStorage =
         "https://raw.githubusercontent.com/miguelRivero/plp_hero_cats/master/dist/images/",
       imagePlaceholder = imagesStorage + "placeholder.jpg",
+      smart_banner = document.querySelector(".smartbanner"),
       dynamic_banner = document.querySelector(".dynamic_banner");
 
     let stickySliderHeight,
@@ -303,8 +304,18 @@ document.onreadystatechange = function () {
       }
     }
 
-    function getSliderTopOffset(el1, el2) {
-      return getTopOffset(el2) ? getTopOffset(el2) : getTopOffset(el1);
+    function getSliderTopOffset() {
+      const filtered_args = [header_top, dynamic_banner, smart_banner].filter(
+          function (el) {
+            return el != null;
+          }
+        ),
+        offset_array = [];
+      for (const el of filtered_args) {
+        if (el !== null) offset_array.push(getTopOffset(el));
+      }
+      return Math.max(...offset_array);
+      //return getTopOffset(el2) ? getTopOffset(el2) : getTopOffset(el1);
     }
 
     function getScrollTop() {
@@ -441,7 +452,7 @@ document.onreadystatechange = function () {
       if (sliderLayoutEvent.detail.sticky !== "sticky") {
         slider.style.top = 0;
       } else {
-        sliderTopOffset = getSliderTopOffset(header_top, dynamic_banner);
+        sliderTopOffset = getSliderTopOffset();
         slider.style.top = sliderTopOffset + "px";
       }
     }
@@ -494,7 +505,7 @@ document.onreadystatechange = function () {
       slider.addEventListener("slider-sticky-state", function (event) {
         if (event.detail.sticky !== last_slider_layout) {
           updateGlider();
-          sliderTopOffset = getSliderTopOffset(header_top, dynamic_banner);
+          sliderTopOffset = getSliderTopOffset();
           //check first change to correct anchor scroll
           last_slider_layout = event.detail.sticky;
         }
@@ -516,7 +527,7 @@ document.onreadystatechange = function () {
       // ==VERTICAL SCROLL ACTIVATING SLIDER BUTTONS=======
       // ==Detecting vertical scroll treshold and trigger==
       // ==================================================
-      sliderTopOffset = getSliderTopOffset(header_top, dynamic_banner);
+      sliderTopOffset = getSliderTopOffset();
       //window.addEventListener("scroll", scrollRAF);
       window.addEventListener("scroll", throttle(scrollListener));
       scrollToWithOffset();
