@@ -1,57 +1,6 @@
-$breakpoint-tablet: 768px;
 @import "~glider-js/glider.min.css";
 @import "~vanilla-js-dropdown/vanilla-js-dropdown.css";
-
-@font-face {
-  font-family: "NespressoLucas-light";
-  src: url("/shared_res/agility/commons/fonts/NespressoLucas-Light.woff")
-    format("woff");
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: "NespressoLucas-normal";
-  src: url("/shared_res/agility/commons/fonts/NespressoLucas-Med.woff")
-    format("woff");
-  font-weight: normal;
-  font-style: normal;
-}
-
-// @font-face {
-//   font-family: 'NespressoLucas-semibold';
-//   src: url('/shared_res/agility/commons/fonts/NespressoLucas-SemiBd.woff') format('woff');
-//   font-weight: normal;
-//   font-style: normal;
-// }
-
-@font-face {
-  font-family: "NespressoLucas-bold";
-  src: url("/shared_res/agility/commons/fonts/NespressoLucas-Bold.woff")
-    format("woff");
-  font-weight: normal;
-  font-style: normal;
-}
-
-// @font-face {
-//   font-family: "NespressoLucas";
-//   src: url("/shared_res/agility/commons/fonts/NespressoLucas-Light.woff");
-//   font-weight: 300;
-//   font-style: normal;
-// }
-
-// @font-face {
-//   font-family: "NespressoLucas";
-//   src: url("/shared_res/agility/commons/fonts/NespressoLucas-Med.woff");
-//   font-weight: 500;
-//   font-style: normal;
-// }
-
-// @font-face {
-//   font-family: "NespressoLucas";
-//   src: url("/shared_res/agility/commons/fonts/NespressoLucas-SemiBd.woff");
-//   font-weight: 900;
-//   font-style: normal;
-// }
+@import "common";
 
 // .ProductList__banner {
 //   height: 369px;
@@ -229,33 +178,33 @@ a.ProductListTechnologies__link {
   position: relative;
   background: white;
 
-  &:before,
-  &:after {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 100%;
-    z-index: 1;
-    top: 0;
-  }
-  &:before {
-    background: linear-gradient(
-      270deg,
-      transparent,
-      rgba(255, 255, 255, 0.7) 60%,
-      #fff 100%
-    );
-    left: 0;
-  }
-  &:after {
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.7) 40%,
-      #fff 100%
-    );
-    right: 0;
-  }
+  // &:before,
+  // &:after {
+  //   content: "";
+  //   position: absolute;
+  //   width: 0;
+  //   height: 100%;
+  //   z-index: 1;
+  //   top: 0;
+  // }
+  // &:before {
+  //   background: linear-gradient(
+  //     270deg,
+  //     transparent,
+  //     rgba(255, 255, 255, 0.7) 60%,
+  //     #fff 100%
+  //   );
+  //   left: 0;
+  // }
+  // &:after {
+  //   background: linear-gradient(
+  //     90deg,
+  //     transparent,
+  //     rgba(255, 255, 255, 0.7) 40%,
+  //     #fff 100%
+  //   );
+  //   right: 0;
+  // }
   &.sticky {
     transition: all 0.25s ease;
     position: fixed;
@@ -263,7 +212,7 @@ a.ProductListTechnologies__link {
     left: 0;
     width: 100%;
     margin-top: 0;
-    z-index: 1900;
+    z-index: 909;
     box-shadow: 5px 5px 10px 0 rgba(11, 12, 17, 0.05);
     .ProductListTechnologiesDropdown {
       display: none;
@@ -331,6 +280,9 @@ a.ProductListTechnologies__link {
       padding-right: 10px;
       &.disabled {
         padding: 0;
+        &:after {
+          width: 0;
+        }
       }
     }
     .ProductListCategoriesSlider__arrow--right {
@@ -536,10 +488,10 @@ a.ProductListTechnologies__link {
   .ProductListCategories {
     margin-top: 40px;
 
-    &:before,
-    &:after {
-      width: 20px;
-    }
+    // &:before,
+    // &:after {
+    //   width: 20px;
+    // }
     &.sticky {
       .ProductListTechnologiesDropdown {
         display: inline-block;

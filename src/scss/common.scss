@@ -1,0 +1,52 @@
+$breakpoint-tablet: 768px;
+
+@font-face {
+  font-family: "NespressoLucas-light";
+  src: url("/shared_res/agility/commons/fonts/NespressoLucas-Light.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "NespressoLucas-normal";
+  src: url("/shared_res/agility/commons/fonts/NespressoLucas-Med.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+// @font-face {
+//   font-family: 'NespressoLucas-semibold';
+//   src: url('/shared_res/agility/commons/fonts/NespressoLucas-SemiBd.woff') format('woff');
+//   font-weight: normal;
+//   font-style: normal;
+// }
+
+@font-face {
+  font-family: "NespressoLucas-bold";
+  src: url("/shared_res/agility/commons/fonts/NespressoLucas-Bold.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+// @font-face {
+//   font-family: "NespressoLucas";
+//   src: url("/shared_res/agility/commons/fonts/NespressoLucas-Light.woff");
+//   font-weight: 300;
+//   font-style: normal;
+// }
+
+// @font-face {
+//   font-family: "NespressoLucas";
+//   src: url("/shared_res/agility/commons/fonts/NespressoLucas-Med.woff");
+//   font-weight: 500;
+//   font-style: normal;
+// }
+
+// @font-face {
+//   font-family: "NespressoLucas";
+//   src: url("/shared_res/agility/commons/fonts/NespressoLucas-SemiBd.woff");
+//   font-weight: 900;
+//   font-style: normal;
+// }
