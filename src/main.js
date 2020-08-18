@@ -53,8 +53,6 @@ document.onreadystatechange = function () {
       last_slider_layout,
       tabs_display_style,
       categories = [],
-      tick = false,
-      //bodyLastTopRect = document.body.getBoundingClientRect().top,
       sliderLayoutEvent = new CustomEvent("slider-sticky-state", {
         detail: { sticky: null },
       });
@@ -192,20 +190,13 @@ document.onreadystatechange = function () {
       ) {
         slider.classList.add("sticky");
         slider.style.top = sliderTopOffset + "px";
-        // bodyLastTopRect = document.body.getBoundingClientRect().top;
         sliderLayoutEvent.detail.sticky = "sticky";
       } else {
         slider.classList.remove("sticky");
         slider.style.top = 0;
         sliderLayoutEvent.detail.sticky = "normal";
       }
-      // console.log("toggleStickySlider");
-      // console.log("getScrollTop() = " + getScrollTop());
-      // console.log("sliderTopOffset = " + sliderTopOffset);
-      // console.log(
-      //   "btnContainer.getBoundingClientRect().y = " +
-      //     btnContainer.getBoundingClientRect().y
-      // );
+
       slider.dispatchEvent(sliderLayoutEvent);
       stickySliderHeight = btnContainer.getBoundingClientRect().height;
     };
@@ -281,7 +272,6 @@ document.onreadystatechange = function () {
           elem: "ProductListTechnologiesDropdown__select",
         });
         slider.classList.add("ProductListCategories--dropdown");
-        // let tabs_display_style;
         if (technologiesElement.currentStyle) {
           tabs_display_style = technologiesElement.currentStyle.display;
         } else if (window.getComputedStyle) {
@@ -311,7 +301,6 @@ document.onreadystatechange = function () {
       });
 
       sliderTopOffset = getSliderTopOffset();
-      //window.addEventListener("scroll", scrollRAF);
       window.addEventListener("scroll", throttle(scrollListener));
       scrollToWithOffset();
       updateGlider(sliderLayoutEvent);
@@ -370,7 +359,6 @@ document.onreadystatechange = function () {
         if (id === link) {
           btn.classList.add("custom-active");
           glider.scrollItem(i > 0 ? i - 1 : 0);
-          //console.log(i);
           updateURL(link);
         }
       });
@@ -392,11 +380,12 @@ document.onreadystatechange = function () {
             return;
           } else {
             e.stopPropagation();
+            const link = e.target
+              .closest(".ProductListCategoriesSlider__item")
+              .getAttribute("data-link");
             window.removeEventListener("scroll", throttle(scrollListener));
-
             let safety_top_offset = getSafetyOffset(),
               offsetTop = Math.ceil(document.getElementById(link).offsetTop);
-
             if (last_slider_layout !== "sticky") {
               window.scrollTo(
                 window.scrollX,
