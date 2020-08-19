@@ -15,8 +15,18 @@
 require("file-loader?name=[name].[ext]!./index.html");
 var projectName = require("glider-js");
 var CustomSelect = require("vanilla-js-dropdown");
-//import "./scss/slider.scss";
+import "./scss/slider.scss";
 import throttle from "raf-throttle";
+import { setSelectValues, createTechnologiesDropdown } from "./js/select.js";
+import { getCategories } from "./js/categories-data.js";
+import {
+  setSlidesElement,
+  setSliderContainer,
+  getSliderRealWidth,
+  sliderRequired,
+  getSlidesAverageWidth,
+  sliderArrowsNeeded,
+} from "./js/horizontal-scroll.js";
 import {
   modCategoryTitle,
   createCatContainer,
@@ -39,7 +49,10 @@ document.onreadystatechange = function () {
         "https://raw.githubusercontent.com/miguelRivero/plp_hero_cats/master/dist/images/",
       imagePlaceholder = imagesStorage + "placeholder.jpg",
       smart_banner = document.querySelector(".smartbanner"),
-      dynamic_banner = document.querySelector(".dynamic_banner");
+      dynamic_banner = document.querySelector(".dynamic_banner"),
+      technologiesElement = document.querySelector(".ProductListTechnologies")
+        ? document.querySelector(".ProductListTechnologies")
+        : false;
 
     let stickySliderHeight,
       sliderTopOffset,
@@ -64,111 +77,12 @@ document.onreadystatechange = function () {
       ".ProductListCategoriesSlider__item"
     );
 
-    const sliderContainer = document.querySelector(
-      ".ProductListCategoriesSlider__container"
-    );
-
-    // ==============================
-    // ==SELECT COMPONENT==
-    // ==============================
-
-    const select_values = getTechnologiesData();
-    const technologiesElement = document.querySelector(
-      ".ProductListTechnologies"
-    )
-      ? document.querySelector(".ProductListTechnologies")
-      : false;
-
-    function getTechnologiesData() {
-      let result = [];
-      const technologies_groups = document.querySelectorAll(
-        ".ProductListTechnologies__link"
-      );
-      if (technologies_groups.length) {
-        for (const technology of technologies_groups) {
-          // technologies_groups.forEach((technology) => {
-          const title = technology
-            .querySelector(".ProductListTechnologies__name")
-            .textContent.trim();
-          const id = title.toLowerCase();
-          result.push({
-            label: title,
-            value: id,
-          });
-        }
-      }
-      return result;
-    }
-
-    function createTechnologiesDropdown() {
-      const sel = document.createElement("select");
-      sel.setAttribute("id", "ProductListTechnologiesDropdown__select");
-      document
-        .querySelector(".ProductListTechnologiesDropdown")
-        .appendChild(sel);
-
-      for (let val of select_values) {
-        const option = document.createElement("option");
-        option.setAttribute("value", val.value);
-        var label = document.createTextNode(val.label);
-        option.appendChild(label);
-        document
-          .getElementById("ProductListTechnologiesDropdown__select")
-          .appendChild(option);
-      }
-
-      addDropdownListener();
-    }
-
-    function addDropdownListener() {
-      const select = document.getElementById(
-        "ProductListTechnologiesDropdown__select"
-      );
-      const custom = document.getElementsByClassName(
-        "ProductListTechnologiesDropdown"
-      )[0];
-
-      let baseURL = getBaseURL();
-      select.addEventListener("change", function () {
-        let newURL = baseURL + "/" + this.value;
-        window.location.href = newURL;
-      });
-
-      select.addEventListener("mouseup", function (e) {
-        window.setTimeout(function () {
-          if (
-            custom
-              .getElementsByClassName("js-Dropdown-list")[0]
-              .classList.contains("is-open")
-          ) {
-            custom.classList.add("ProductListTechnologiesDropdown--opened");
-          } else {
-            custom.classList.remove("ProductListTechnologiesDropdown--opened");
-          }
-        }, 0);
-      });
-    }
-
-    function getBaseURL() {
-      let _url = window.location.href.replace(location.hash, "");
-      const lastItem = _url.substring(_url.lastIndexOf("/") + 1);
-      for (const val of select_values) {
-        if (val.value === lastItem) {
-          _url = _url.substring(0, _url.lastIndexOf("/"));
-        }
-      }
-      return _url;
-    }
-    // ==============================
-    // ==END SELECT COMPONENT==
-    // ==============================
-
     // ==============================
     // ==SLIDER COMPONENT==
     // ==============================
 
     // Initialize Glider slider with options
-    function createGlider(w) {
+    const createGlider = (w) => {
       glider = new Glider(btnContainer, {
         exactWidth: true,
         draggable: true,
@@ -182,55 +96,7 @@ document.onreadystatechange = function () {
           next: ".glider-next",
         },
       });
-    }
-
-    //Getting categories data and parsing it
-    function capitalize(str1) {
-      return str1.charAt(0).toUpperCase() + str1.slice(1);
-    }
-    function shortestStringReduce(arr) {
-      return arr.reduce((a, b) => (a.length < b.length ? a : b));
-    }
-    function parseTitleAsArray(arr) {
-      for (let [index, str] of arr.entries()) {
-        if (str === "&" || str === "to" || str === "and" || str === "of") {
-          let shorter = shortestStringReduce([arr[index - 1], arr[index + 1]]);
-          if (shorter === arr[index - 1]) {
-            arr[index - 1] = arr[index - 1] + " " + str;
-          } else {
-            arr[index + 1] = str + " " + arr[index + 1];
-          }
-          arr.splice(index, 1);
-        } else {
-          capitalize(str);
-        }
-      }
-      return arr;
-    }
-
-    function getCategories() {
-      let result = [];
-      if (product_list_groups.length) {
-        product_list_groups.forEach((productGroup) => {
-          const title = productGroup
-            .querySelector("h3")
-            .textContent.replace(" Capsules", "")
-            .replace(" capsules", "")
-            .trim();
-          const text_id = title.toLowerCase().split(" ").join("-");
-          const id = "ab-" + text_id;
-          const titleAsArray = parseTitleAsArray(title.split(" "));
-          productGroup.id = id;
-          result.push({
-            label: title,
-            labelAsArray: titleAsArray,
-            image: imagesStorage + text_id + ".jpg",
-            id: id,
-          });
-        });
-      }
-      return result;
-    }
+    };
 
     //Creating the slider markup
     function addProductListNavigationComponent() {
@@ -287,7 +153,7 @@ document.onreadystatechange = function () {
       referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
     }
     // ==============================
-    // ==SLIDER COMPONENT==
+    // ==END SLIDER COMPONENT========
     // ==============================
 
     // ===================================
@@ -295,16 +161,16 @@ document.onreadystatechange = function () {
     // ==For sticky functionality==
     // ===================================
 
-    function getTopOffset(element) {
+    const getTopOffset = (element) => {
       if (typeof element != "undefined" && element != null) {
         let rect = element.getBoundingClientRect();
         return rect.top + rect.height;
       } else {
         return 0;
       }
-    }
+    };
 
-    function getSliderTopOffset() {
+    const getSliderTopOffset = () => {
       const filtered_args = [header_top, dynamic_banner, smart_banner].filter(
           function (el) {
             return el != null;
@@ -315,42 +181,34 @@ document.onreadystatechange = function () {
         if (el !== null) offset_array.push(getTopOffset(el));
       }
       return Math.max(...offset_array);
-      //return getTopOffset(el2) ? getTopOffset(el2) : getTopOffset(el1);
-    }
+    };
 
-    function getScrollTop() {
+    const getScrollTop = () => {
       return (
         window.pageYOffset ||
         document.documentElement.scrollTop ||
         document.body.scrollTop ||
         0
       );
-    }
+    };
 
-    function toggleStickySlider() {
+    const toggleStickySlider = () => {
       if (
         getScrollTop() > 0 &&
         sliderTopOffset >= btnContainer.getBoundingClientRect().y
       ) {
         slider.classList.add("sticky");
         slider.style.top = sliderTopOffset + "px";
-        // bodyLastTopRect = document.body.getBoundingClientRect().top;
         sliderLayoutEvent.detail.sticky = "sticky";
       } else {
         slider.classList.remove("sticky");
         slider.style.top = 0;
         sliderLayoutEvent.detail.sticky = "normal";
       }
-      // console.log("toggleStickySlider");
-      // console.log("getScrollTop() = " + getScrollTop());
-      // console.log("sliderTopOffset = " + sliderTopOffset);
-      // console.log(
-      //   "btnContainer.getBoundingClientRect().y = " +
-      //     btnContainer.getBoundingClientRect().y
-      // );
+
       slider.dispatchEvent(sliderLayoutEvent);
       stickySliderHeight = btnContainer.getBoundingClientRect().height;
-    }
+    };
 
     // ===================================
     // ==END VERTICAL SCROLL FUNCTIONALITY==
@@ -362,76 +220,13 @@ document.onreadystatechange = function () {
     // ==Glider component use and override==
     // =====================================
     const slidesTrackElement = document.querySelector(".glider-track");
-    const slidesElements = slidesTrackElement.children;
-
-    function getEachSlideWidth() {
-      let _widths = [];
-      for (let i = 0; i < slidesElements.length; i++) {
-        _widths.push(slidesElements[i].offsetWidth);
-      }
-      return _widths;
-    }
-
-    function getSlidesAverageWidth() {
-      return (
-        Math.ceil(
-          getEachSlideWidth().reduce((a, b) => a + b, 0) / slidesElements.length
-        ) + slideMargin
-      );
-    }
-
-    function getSlidesTotalWidth() {
-      return getEachSlideWidth().reduce((a, b) => a + b, 0);
-    }
-
-    function getSliderRealWidth() {
-      let _w = getSlidesTotalWidth();
-      if (sliderLayoutEvent.detail.sticky === "sticky") {
-        return _w + 40;
-      } else if (
-        sliderLayoutEvent.detail.sticky !== "sticky" &&
-        sliderArrowsNeeded(_w)
-      ) {
-        return _w + 20;
-      } else {
-        return _w;
-      }
-    }
-
-    // function disableSliderArrowRight(disable) {
-    //   const arrow_right = sliderContainer.querySelector(
-    //     ".ProductListCategoriesSlider__arrow--right"
-    //   );
-
-    //   if (
-    //     btns[btns.length - 1].getBoundingClientRect().left <
-    //     sliderContainer.getBoundingClientRect().width
-    //   ) {
-    //     arrow_right.classList.add("custom-disabled");
-    //   } else {
-    //     arrow_right.classList.remove("custom-disabled");
-    //   }
-    // }
-
-    function sliderArrowsNeeded(w) {
-      if (w >= sliderContainer.getBoundingClientRect().width) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    function sliderRequired(bool) {
-      if (bool) {
-        sliderContainer.classList.remove("no-slider");
-      } else {
-        sliderContainer.classList.add("no-slider");
-      }
-    }
-
-    function updateGlider() {
+    setSlidesElement(slidesTrackElement);
+    setSliderContainer(
+      document.querySelector(".ProductListCategoriesSlider__container")
+    );
+    const updateGlider = (layoutEvent) => {
       //Custom glider methods
-      const _realwidth = getSliderRealWidth();
+      const _realwidth = getSliderRealWidth(layoutEvent);
       slidesTrackElement.style.width = _realwidth + "px";
       sliderRequired(sliderArrowsNeeded(_realwidth));
       //Native Glider methods
@@ -449,17 +244,13 @@ document.onreadystatechange = function () {
         arrow.style.height = heightSlider + "px";
       }
 
-      if (sliderLayoutEvent.detail.sticky !== "sticky") {
+      if (layoutEvent.detail.sticky !== "sticky") {
         slider.style.top = 0;
       } else {
         sliderTopOffset = getSliderTopOffset();
         slider.style.top = sliderTopOffset + "px";
       }
-    }
-    // function slideControlsEnabled() {
-    //   return btnContainer.scrollWidth > btnContainer.clientWidth;
-    // }
-
+    };
     // =====================================
     // ==END HORIZONTAL SCROLL FUNCTIONALITY==
     // ==Glider component use and override==
@@ -485,12 +276,14 @@ document.onreadystatechange = function () {
         slider.classList.remove("ProductListCategories--dropdown");
       } else {
         // show dropdown and listen to sticky state to hide/show technologies tabs
+        setSelectValues(
+          document.querySelectorAll(".ProductListTechnologies__link")
+        );
         createTechnologiesDropdown();
         const select = new CustomSelect({
           elem: "ProductListTechnologiesDropdown__select",
         });
         slider.classList.add("ProductListCategories--dropdown");
-        // let tabs_display_style;
         if (technologiesElement.currentStyle) {
           tabs_display_style = technologiesElement.currentStyle.display;
         } else if (window.getComputedStyle) {
@@ -504,7 +297,7 @@ document.onreadystatechange = function () {
 
       slider.addEventListener("slider-sticky-state", function (event) {
         if (event.detail.sticky !== last_slider_layout) {
-          updateGlider();
+          updateGlider(sliderLayoutEvent);
           sliderTopOffset = getSliderTopOffset();
           //check first change to correct anchor scroll
           last_slider_layout = event.detail.sticky;
@@ -519,46 +312,35 @@ document.onreadystatechange = function () {
         }
       });
 
-      // =====================================
-      // ==END SETTIMEOUT FUNCTIONALITY==
-      // =====================================
-
-      // ==================================================
-      // ==VERTICAL SCROLL ACTIVATING SLIDER BUTTONS=======
-      // ==Detecting vertical scroll treshold and trigger==
-      // ==================================================
       sliderTopOffset = getSliderTopOffset();
-      //window.addEventListener("scroll", scrollRAF);
       window.addEventListener("scroll", throttle(scrollListener));
       scrollToWithOffset();
-      updateGlider();
+      updateGlider(sliderLayoutEvent);
       highlightSliderBtn();
     }, 0);
 
-    function highlightSliderBtn() {
+    // =====================================
+    // ==END SETTIMEOUT FUNCTIONALITY==
+    // =====================================
+
+    // ==================================================
+    // ==VERTICAL SCROLL ACTIVATING SLIDER BUTTONS=======
+    // ==Detecting vertical scroll treshold and trigger==
+    // ==================================================
+    const highlightSliderBtn = () => {
       for (let cat of categories) {
         if (location.hash === "#" + cat.id) {
           setBtnActive(cat.id);
         }
       }
-    }
+    };
 
-    function scrollListener() {
+    const scrollListener = () => {
       toggleStickySlider();
       checkSectionsAreIntoView();
-    }
+    };
 
-    // function scrollRAF() {
-    //   if (!tick) {
-    //     window.requestAnimationFrame(function () {
-    //       scrollListener();
-    //       tick = false;
-    //     });
-    //     tick = true;
-    //   }
-    // }
-
-    function getSafetyOffset() {
+    const getSafetyOffset = () => {
       return (
         Math.ceil(
           stickySliderHeight
@@ -566,15 +348,13 @@ document.onreadystatechange = function () {
             : 56 + sliderTopOffset
         ) + 100
       );
-    }
+    };
 
-    function checkSectionsAreIntoView() {
+    const checkSectionsAreIntoView = () => {
       var fromTop = Math.ceil(getScrollTop() + getSafetyOffset());
       let cur = [];
       // Get id of current scroll item
       for (let target of product_list_groups) {
-        //let offsetTop = Math.ceil(target.offsetTop);
-        // if (offsetTop <= fromTop && offsetTop + $(target).height() > fromTop) {
         if (target.offsetTop <= fromTop) {
           cur.push($(target));
         }
@@ -582,29 +362,28 @@ document.onreadystatechange = function () {
       cur = cur[cur.length - 1];
       var id = cur && cur.length ? cur[0].id : "";
       setBtnActive(id);
-    }
+    };
 
-    function setBtnActive(id) {
+    const setBtnActive = (id) => {
       btns.forEach((btn, i) => {
         btn.classList.remove("custom-active");
         const link = btn.getAttribute("data-link");
         if (id === link) {
           btn.classList.add("custom-active");
           glider.scrollItem(i > 0 ? i - 1 : 0);
-          //console.log(i);
           updateURL(link);
         }
       });
-    }
+    };
 
-    function updateURL(link) {
+    const updateURL = (link) => {
       if (history.pushState) {
         history.pushState(null, null, "#" + link);
       } else {
         location.hash = "#" + link;
       }
-      //console.log(location.hash);
-    }
+    };
+
     const scrollToWithOffset = () => {
       slider.addEventListener(
         "click",
@@ -613,15 +392,12 @@ document.onreadystatechange = function () {
             return;
           } else {
             e.stopPropagation();
+            const link = e.target
+              .closest(".ProductListCategoriesSlider__item")
+              .getAttribute("data-link");
             window.removeEventListener("scroll", throttle(scrollListener));
-            // const btn = e.target.closest(".ProductListCategoriesSlider__item");
-            // const link = btn.getAttribute("data-link");
-
-            //updateURL(link);
-
             let safety_top_offset = getSafetyOffset(),
               offsetTop = Math.ceil(document.getElementById(link).offsetTop);
-
             if (last_slider_layout !== "sticky") {
               window.scrollTo(
                 window.scrollX,
@@ -690,7 +466,7 @@ document.onreadystatechange = function () {
     // ==================================================
 
     window.onresize = function (event) {
-      updateGlider();
+      updateGlider(sliderLayoutEvent);
       resizeBackground();
     };
 
