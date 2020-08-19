@@ -1,16 +1,17 @@
 // ==============================
 // ==SELECT COMPONENT==
 // ==============================
+let select_values;
 
-const select_values = getTechnologiesData();
+const setSelectValues = (el) => {
+  select_values = getTechnologiesData(el);
+};
 
-function getTechnologiesData() {
+function getTechnologiesData(tech) {
   let result = [];
-  const technologies_groups = document.querySelectorAll(
-    ".ProductListTechnologies__link"
-  );
-  if (technologies_groups.length) {
-    for (const technology of technologies_groups) {
+
+  if (tech.length) {
+    for (const technology of tech) {
       const title = technology
         .querySelector(".ProductListTechnologies__name")
         .textContent.trim();
@@ -82,7 +83,7 @@ function getBaseURL() {
   return _url;
 }
 
-export { createTechnologiesDropdown };
+export { setSelectValues, createTechnologiesDropdown };
 // ==============================
 // ==END SELECT COMPONENT==
 // ==============================

@@ -3,6 +3,11 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
+const isDevelopment = process.env.NODE_ENV === "development";
+const bundle = false;
 
 var config = {
   context: __dirname + "/src", // `__dirname` is root of project and `/src` is source
@@ -11,7 +16,7 @@ var config = {
   },
   output: {
     path: __dirname + "/dist", // `/dist` is the destination
-    filename: "[name].js", // bundle created by webpack it will contain all our app logic. we will link to this .js file from our html page.
+    filename: "[name].min.js", // bundle created by webpack it will contain all our app logic. we will link to this .js file from our html page.
   },
   module: {
     rules: [
@@ -33,9 +38,12 @@ var config = {
         ],
       },
       {
-        test: /\.scss$/,
+        test: /\.s(a|c)ss$/,
+        exclude: /\.module.(s(a|c)ss)$/,
         use: [
-          "style-loader", // creates style nodes from JS strings
+          isDevelopment || bundle
+            ? "style-loader"
+            : MiniCssExtractPlugin.loader,
           {
             loader: "css-loader", // translates CSS into CommonJS
             options: {
@@ -43,7 +51,12 @@ var config = {
             },
           },
           "postcss-loader", // post process the compiled CSS
-          "sass-loader", // compiles Sass to CSS, using Node Sass by default
+          {
+            loader: "sass-loader",
+            options: {
+              sourceMap: isDevelopment,
+            },
+          },
         ],
       },
       {
@@ -61,6 +74,7 @@ var config = {
     ],
   },
   plugins: [
+    //new BundleAnalyzerPlugin(),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin([{ from: "images", to: "images" }]),
   ],
@@ -72,8 +86,12 @@ var config = {
           mangle: {
             toplevel: true,
           },
+          compress: {
+            drop_console: !bundle,
+          },
           output: {
             beautify: false,
+            comments: bundle,
           },
         },
       }),
@@ -83,7 +101,31 @@ var config = {
         },
       }),
     ],
+    splitChunks: {
+      chunks: "all",
+      minSize: 15000,
+      maxSize: 19480,
+      cacheGroups: {
+        // Merge all the CSS into one file
+        styles: {
+          name: "styles",
+          test: /\.s?css$/,
+          chunks: "all",
+          minChunks: 1,
+          reuseExistingChunk: true,
+          enforce: true,
+        },
+      },
+    },
   },
 };
 
+if (!bundle) {
+  config.plugins.push(
+    new MiniCssExtractPlugin({
+      filename: isDevelopment ? "[name].css" : "[name].[hash].css",
+      chunkFilename: isDevelopment ? "[id].css" : "[id].[hash].css",
+    })
+  );
+}
 module.exports = config;

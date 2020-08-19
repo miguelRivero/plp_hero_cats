@@ -17,7 +17,7 @@ var projectName = require("glider-js");
 var CustomSelect = require("vanilla-js-dropdown");
 import "./scss/slider.scss";
 import throttle from "raf-throttle";
-import { createTechnologiesDropdown } from "./js/select.js";
+import { setSelectValues, createTechnologiesDropdown } from "./js/select.js";
 import { getCategories } from "./js/categories-data.js";
 import {
   setSlidesElement,
@@ -267,6 +267,9 @@ document.onreadystatechange = function () {
         slider.classList.remove("ProductListCategories--dropdown");
       } else {
         // show dropdown and listen to sticky state to hide/show technologies tabs
+        setSelectValues(
+          document.querySelectorAll(".ProductListTechnologies__link")
+        );
         createTechnologiesDropdown();
         const select = new CustomSelect({
           elem: "ProductListTechnologiesDropdown__select",
