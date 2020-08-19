@@ -7,12 +7,13 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
 const isDevelopment = process.env.NODE_ENV === "development";
-const bundle = false;
+const bundle = true;
 
 var config = {
   context: __dirname + "/src", // `__dirname` is root of project and `/src` is source
   entry: {
     app: ["./main.js"],
+    //style: ["./scss/slider.scss"],
   },
   output: {
     path: __dirname + "/dist", // `/dist` is the destination
@@ -91,7 +92,7 @@ var config = {
           },
           output: {
             beautify: false,
-            comments: bundle,
+            comments: false,
           },
         },
       }),
@@ -101,22 +102,6 @@ var config = {
         },
       }),
     ],
-    splitChunks: {
-      chunks: "all",
-      minSize: 15000,
-      maxSize: 19480,
-      cacheGroups: {
-        // Merge all the CSS into one file
-        styles: {
-          name: "styles",
-          test: /\.s?css$/,
-          chunks: "all",
-          minChunks: 1,
-          reuseExistingChunk: true,
-          enforce: true,
-        },
-      },
-    },
   },
 };
 
@@ -127,5 +112,21 @@ if (!bundle) {
       chunkFilename: isDevelopment ? "[id].css" : "[id].[hash].css",
     })
   );
+  config.optimization.splitChunks = {
+    chunks: "all",
+    minSize: 15000,
+    maxSize: 19480,
+    cacheGroups: {
+      // Merge all the CSS into one file
+      styles: {
+        name: "styles",
+        test: /\.s?css$/,
+        chunks: "all",
+        minChunks: 1,
+        reuseExistingChunk: true,
+        enforce: true,
+      },
+    },
+  };
 }
 module.exports = config;

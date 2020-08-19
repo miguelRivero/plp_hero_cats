@@ -16,6 +16,8 @@ require("file-loader?name=[name].[ext]!./index.html");
 var projectName = require("glider-js");
 var CustomSelect = require("vanilla-js-dropdown");
 import "./scss/slider.scss";
+import "./scss/grid.scss";
+import "./scss/addToCartButton.scss";
 import throttle from "raf-throttle";
 import { setSelectValues, createTechnologiesDropdown } from "./js/select.js";
 import { getCategories } from "./js/categories-data.js";
@@ -100,7 +102,7 @@ document.onreadystatechange = function () {
 
     //Creating the slider markup
     function addProductListNavigationComponent() {
-      categories = getCategories();
+      categories = getCategories(product_list_groups, imagesStorage);
       return `
     <div class="ProductListNavigation">
       <div class="ProductListTechnologiesDropdown"></div>
