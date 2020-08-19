@@ -7,7 +7,7 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 var config = {
   context: __dirname + "/src", // `__dirname` is root of project and `/src` is source
   entry: {
-    app: ["./main.js", "./scss/slider.scss"],
+    app: ["./main.js"],
   },
   output: {
     path: __dirname + "/dist", // `/dist` is the destination
