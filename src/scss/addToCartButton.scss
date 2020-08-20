@@ -30,6 +30,10 @@ input:invalid {
 .AddToBagButton {
   border: none;
   &[disabled] {
+    //to ensure out of stock text has space
+    .empty {
+      width: 100%;
+    }
     button {
       background-color: #e3e3e3;
       color: #707070;
@@ -39,10 +43,6 @@ input:invalid {
 }
 .AddToBagButton__stepper {
   display: inline-block;
-  //overflow: visible;
-  //height: 2.1em;
-  //background: #fff;
-  // padding: 1px;
   position: relative;
 
   button {
@@ -67,6 +67,7 @@ input:invalid {
     line-height: 1rem;
     text-align: center;
     width: 100%;
+    white-space: nowrap;
   }
   &.incart,
   &.empty {
