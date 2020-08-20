@@ -1,6 +1,6 @@
 export async function getPLPData() {
   let resp = await fetch(
-    "https://www.nespresso.com/br/en/order/capsules/original"
+    "https://www.nespresso.com/uk/en/order/capsules/original"
   );
   resp = await resp.text();
   const parsedDom = new DOMParser().parseFromString(resp, "text/html");

@@ -20,7 +20,7 @@ import "./scss/grid.scss";
 import "./scss/addToCartButton.scss";
 import throttle from "raf-throttle";
 import { setSelectValues, createTechnologiesDropdown } from "./js/select.js";
-import { getCategories } from "./js/categories-data.js";
+import { getCategories } from "./js/categories-data";
 import {
   setSlidesElement,
   setSliderContainer,
@@ -28,14 +28,19 @@ import {
   sliderRequired,
   getSlidesAverageWidth,
   sliderArrowsNeeded,
-} from "./js/horizontal-scroll.js";
+} from "./js/horizontal-scroll";
 import {
   modCategoryTitle,
   createCatContainer,
   resizeBackground,
 } from "./js/grid-list";
 import { getOriginalBtnData } from "./js/addToCartButton";
+import { getPLPData } from "./js/getPLPData";
 
+const getData = async () => {
+  let jsonData = await getPLPData();
+  return jsonData;
+};
 // =====================================
 // ==DOCUMENT ONREADY==
 // =====================================
@@ -469,7 +474,10 @@ document.onreadystatechange = function () {
 
     window.onresize = function (event) {
       updateGlider(sliderLayoutEvent);
-      resizeBackground();
+      resizeBackground(
+        document.querySelectorAll(".ProductListGroup__background--overflowed"),
+        document.documentElement.clientWidth
+      );
     };
 
     // ==========================================================
@@ -479,37 +487,36 @@ document.onreadystatechange = function () {
     // ==================================================
     // == GRID / LIST LAYOUT ============================
     // ==================================================
-    // for (let title of document.querySelectorAll(".ProductListGroup__title")) {
-    //   modCategoryTitle(title);
-    // }
 
     // Mod to the category items
-    for (let cat of product_list_groups) {
-      // Mod to the category title
-      const title = cat.querySelector(".ProductListGroup__title");
-      const productGridContainer = document.createElement("div");
-      productGridContainer.classList.add("ProductListGroupContainer");
+    getData().then((value) => {
+      let products = value.configuration.eCommerceData.products;
+      for (let cat of product_list_groups) {
+        // Mod to the category title
+        const title = cat.querySelector(".ProductListGroup__title");
+        const productGridContainer = document.createElement("div");
+        productGridContainer.classList.add("ProductListGroupContainer");
+        modCategoryTitle(title);
 
-      modCategoryTitle(title);
+        cat
+          .querySelector(".ProductListGroup__content")
+          .appendChild(createCatContainer(cat, products));
 
-      cat
-        .querySelector(".ProductListGroup__content")
-        .appendChild(createCatContainer(cat));
+        cat.appendChild(productGridContainer);
+        productGridContainer.appendChild(
+          cat.querySelector(".ProductListGroup__background--overflowed")
+        );
+        productGridContainer.appendChild(title);
+        productGridContainer.appendChild(
+          cat.querySelector(".ProductListGroup__content")
+        );
+      }
+    });
 
-      cat.appendChild(productGridContainer);
-      productGridContainer.appendChild(
-        cat.querySelector(".ProductListGroup__background--overflowed")
-      );
-      productGridContainer.appendChild(
-        cat.querySelector(".ProductListGroup__title")
-      );
-      productGridContainer.appendChild(
-        cat.querySelector(".ProductListGroup__content")
-      );
-    }
-
-    resizeBackground();
-    getOriginalBtnData();
+    resizeBackground(
+      document.querySelectorAll(".ProductListGroup__background--overflowed"),
+      document.documentElement.clientWidth
+    );
     // ==================================================
     // == END GRID / LIST LAYOUT ========================
     // ==================================================

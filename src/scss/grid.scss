@@ -116,7 +116,6 @@
   transform: translateY(-100px);
   background: white;
   margin: 0 1rem;
-  background-color: #f6f4f2;
   li {
     width: 50%;
     max-width: 246px;
@@ -285,8 +284,12 @@
         width: 33.333%;
         max-width: none;
         border-right: 0;
+        &:last-child,
         &:nth-child(even) {
           border-left: 1px solid #e3e3e3;
+        }
+        &:nth-child(3) {
+          border-right: 1px solid #e3e3e3;
         }
       }
     }

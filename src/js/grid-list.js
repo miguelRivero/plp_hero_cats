@@ -9,42 +9,47 @@
 // =====================================
 import "regenerator-runtime/runtime";
 import data from "./categories.json";
-import { getPLPData } from "./getPLPData.js";
-const getData = async () => {
-  let jsonData = await getPLPData();
-  return jsonData;
-};
+//import { getPLPData } from "./getPLPData";
+import { getOriginalBtnData } from "./addToCartButton";
+
+// const getData = async () => {
+//   let jsonData = await getPLPData();
+//   return jsonData;
+// };
 const categoriesData = data.categories;
 
 let products,
   respContainerWidth = 996;
-getData().then((value) => {
-  products = value.configuration.eCommerceData.products;
-});
+// getData().then((value) => {
+//   products = value.configuration.eCommerceData.products;
+//   console.log(value.configuration.eCommerceData);
+// });
 
 // =====================================
 // ==END DOCUMENT ONREADY==
 // =====================================
 
-const createCatContainer = (el) => {
+const createCatContainer = (el, products) => {
   const items = el.querySelectorAll(".ProductListElementFilter");
   const categoryItemContainer = document.createElement("ul");
   categoryItemContainer.classList.add("ProductListContainer", "grid");
   for (const item of items) {
+    console.log(item);
+    const prodId = item
+      .querySelector(".ProductListElement")
+      .getAttribute("data-product-item-id");
+    console.log(prodId);
+    const product = getProductBy("internationalId", prodId, products);
+    console.log(product);
     const nameEl = item.querySelector(".ProductListElement__name a");
     const name = nameEl.textContent || nameEl.innerText;
-    const product = getProduct(name);
+    //const product = getProduct(name, products);
     //transform description case
     const descriptionEl = item.querySelector(".ProductListElement__headline");
     const description = descriptionEl.textContent || descriptionEl.innerText;
     descriptionEl.innerHTML = capitalize(description);
     //adding progress line
     const intensityEl = item.querySelector(".ProductListElement__intensity");
-    // const intensityNumEl = item.querySelector(
-    //   ".ProductListElement__current-intensity"
-    // );
-    // console.log(intensityNumEl);
-    // const intensity = intensityNumEl.textContent || intensityNumEl.innerText;
     const progress = createIntensityEl(product.intensity);
     intensityEl.innerHTML = progress;
     // adding per capsule price
@@ -52,6 +57,7 @@ const createCatContainer = (el) => {
     const price = priceEl.textContent || priceEl.innerText;
     const priceHTML = price + "<span>per capsule</span>";
     priceEl.innerHTML = priceHTML;
+    getOriginalBtnData(item.querySelectorAll(".AddToBagButton"));
 
     //crating a li and moving the item inside
     const li = document.createElement("li");
@@ -60,9 +66,7 @@ const createCatContainer = (el) => {
   }
   return categoryItemContainer;
 };
-const getPLPdata = () => {
-  getPLPData().then((data) => console.log(data));
-};
+
 const modCategoryTitle = (el) => {
   el.outerHTML = getCatTitleHTML(el);
 };
@@ -78,13 +82,13 @@ const getCatData = (str) => {
   }
 };
 
-const createCatTitleHTML = (data) => {
+const createCatTitleHTML = (cat) => {
   return `
   <div class="ProductListGroup__background--overflowed"><div></div><div></div></div>
-  <h3 class="ProductListGroup__title">${data.title}</h3>
+  <h3 class="ProductListGroup__title">${cat.title}</h3>
   <div class="ProductListGroup__content">
     <div class="ProductListGroup__description">
-      <p>${data.description}</p>
+      <p>${cat.description}</p>
       <a href="">Discover</a>
     </div>
   </div>
@@ -93,7 +97,7 @@ const createCatTitleHTML = (data) => {
 
 const createIntensityEl = (int) => {
   return `
-    <p>INTENSITY <span>${int}</span></p>
+    <p><span>INTENSITY</span>&nbsp;<span class="ProductListElement__intensenumber">${int}</span></p>
     <div class="ProductListElement__progress">
       <div class="ProductListElement__progressBar">
         <span class="ProductListElement__progressBarFill" style="width: ${
@@ -109,9 +113,17 @@ const capitalize = (s) => {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 };
 
-const getProduct = (name) => {
+const getProduct = (name, products) => {
   for (let prod of products) {
     if (name === prod.name) {
+      return prod;
+    }
+  }
+};
+
+const getProductBy = (attr, name, products) => {
+  for (let prod of products) {
+    if (name === prod[attr]) {
       return prod;
     }
   }
@@ -125,11 +137,7 @@ const backgroundOverWidth = (w) => {
   return bw;
 };
 
-const resizeBackground = () => {
-  let bgs = document.querySelectorAll(
-      ".ProductListGroup__background--overflowed"
-    ),
-    window_width = document.documentElement.clientWidth;
+const resizeBackground = (bgs, window_width) => {
   let w = backgroundOverWidth(window_width);
   for (let bg of bgs) {
     bg.style.width = w;
