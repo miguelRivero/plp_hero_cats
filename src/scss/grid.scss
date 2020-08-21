@@ -121,6 +121,8 @@
     max-width: 246px;
     border: 1px solid #e3e3e3;
     border-top: 0;
+    background-color: #f6f4f2;
+
     &:nth-child(even) {
       border-left: 0;
     }
@@ -237,15 +239,17 @@
 }
 @media (min-width: $breakpoint-tablet) {
   .ProductListGroup__background--overflowed {
+    width: 100vw;
+    margin-left: calc(-100vw / 2 + 496px / 2);
     & > div {
-      height: 574px;
+      height: 580px;
       &:first-child {
-        width: 75%;
+        width: 100% - 231px;
       }
       &:last-child {
         display: inline-block;
         background-color: grey;
-        width: 25%;
+        width: 231px;
       }
     }
   }

@@ -32,7 +32,7 @@ input:invalid {
   &[disabled] {
     //to ensure out of stock text has space
     .empty {
-      width: 100%;
+      width: 90%;
     }
     button {
       background-color: #e3e3e3;
@@ -48,14 +48,11 @@ input:invalid {
   button {
     height: 40px;
     width: 40px;
-    border-radius: 50%;
-    background: #3d8705;
     color: white;
     font-family: "NespressoLucas-light", Helvetica, Arial, sans-serif !important;
     line-height: 2rem;
     font-size: 2rem;
     padding: 0.2rem;
-    border: none;
     position: absolute;
     top: 0;
   }
@@ -68,12 +65,17 @@ input:invalid {
     text-align: center;
     width: 100%;
     white-space: nowrap;
+    border: none;
+    border-radius: 24px;
+    background: #3d8705;
   }
   &.incart,
   &.empty {
+    .AddToBagButton__decrease,
     .AddToBagButton__increase {
-      width: 100%;
+      width: 50%;
       border-radius: 24px;
+      left: 25%;
     }
   }
   &.incart {
@@ -114,9 +116,23 @@ input:invalid {
   text-align: center;
   transition: width 0.7s ease-out;
 }
+.AddToBagButton__decrease,
+.AddToBagButton__increase {
+  display: inline-block;
+  background: linear-gradient(#3d8705, #3d8705) top left,
+    linear-gradient(#3d8705, #3d8705) top right,
+    linear-gradient(#3d8705, #3d8705) bottom left,
+    linear-gradient(#3d8705, #3d8705) bottom right;
+  background-repeat: no-repeat;
+  border: 13px solid #3d8705;
+  box-sizing: border-box;
+  border-radius: 50%;
+}
 .AddToBagButton__decrease {
+  background-size: 100% calc(50% - 1px);
   left: 0;
 }
 .AddToBagButton__increase {
+  background-size: calc(50% - 1px) calc(50% - 1px);
   right: 0;
 }
