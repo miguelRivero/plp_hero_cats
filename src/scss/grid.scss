@@ -244,7 +244,7 @@
     & > div {
       height: 580px;
       &:first-child {
-        width: 100% - 231px;
+        width: calc(100% - 231px);
       }
       &:last-child {
         display: inline-block;
