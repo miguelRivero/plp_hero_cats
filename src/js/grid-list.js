@@ -29,38 +29,35 @@ let products,
 // ==END DOCUMENT ONREADY==
 // =====================================
 
-const createCatContainer = (el, products) => {
+const createCatContainer = (el, products, cart) => {
   const items = el.querySelectorAll(".ProductListElementFilter");
   const categoryItemContainer = document.createElement("ul");
   categoryItemContainer.classList.add("ProductListContainer", "grid");
   for (const item of items) {
-    console.log(item);
     const prodId = item
-      .querySelector(".ProductListElement")
-      .getAttribute("data-product-item-id");
-    console.log(prodId);
-    const product = getProductBy("internationalId", prodId, products);
-    console.log(product);
-    const nameEl = item.querySelector(".ProductListElement__name a");
-    const name = nameEl.textContent || nameEl.innerText;
-    //const product = getProduct(name, products);
+        .querySelector(".ProductListElement")
+        .getAttribute("data-product-item-id"),
+      product = getProductBy("internationalId", prodId, products),
+      added = productAdded(product.internationalId, cart),
+      descriptionEl = item.querySelector(".ProductListElement__headline"),
+      intensityEl = item.querySelector(".ProductListElement__intensity"),
+      progress = createIntensityEl(product.intensity),
+      priceEl = item.querySelector(".ProductListElement__price"),
+      price = priceEl.textContent || priceEl.innerText,
+      li = document.createElement("li");
     //transform description case
-    const descriptionEl = item.querySelector(".ProductListElement__headline");
-    const description = descriptionEl.textContent || descriptionEl.innerText;
-    descriptionEl.innerHTML = capitalize(description);
+    descriptionEl.innerHTML = capitalize(product.headline);
     //adding progress line
-    const intensityEl = item.querySelector(".ProductListElement__intensity");
-    const progress = createIntensityEl(product.intensity);
     intensityEl.innerHTML = progress;
     // adding per capsule price
-    const priceEl = item.querySelector(".ProductListElement__price");
-    const price = priceEl.textContent || priceEl.innerText;
-    const priceHTML = price + "<span>per capsule</span>";
-    priceEl.innerHTML = priceHTML;
-    getOriginalBtnData(item.querySelectorAll(".AddToBagButton"));
-
-    //crating a li and moving the item inside
-    const li = document.createElement("li");
+    priceEl.innerHTML = price + "<span>per capsule</span>";
+    //adding Add to Cart btn
+    getOriginalBtnData(
+      item.querySelectorAll(".AddToBagButton"),
+      product,
+      added
+    );
+    //creating a li and moving the item inside
     li.appendChild(item);
     categoryItemContainer.appendChild(li);
   }
@@ -113,14 +110,6 @@ const capitalize = (s) => {
   return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 };
 
-const getProduct = (name, products) => {
-  for (let prod of products) {
-    if (name === prod.name) {
-      return prod;
-    }
-  }
-};
-
 const getProductBy = (attr, name, products) => {
   for (let prod of products) {
     if (name === prod[attr]) {
@@ -129,18 +118,32 @@ const getProductBy = (attr, name, products) => {
   }
 };
 
-const backgroundOverWidth = (w) => {
-  let bw =
-    w >= respContainerWidth
-      ? respContainerWidth + (w - respContainerWidth) * 0.5 + "px"
-      : (bw = "100%");
-  return bw;
-};
-
-const resizeBackground = (bgs, window_width) => {
-  let w = backgroundOverWidth(window_width);
-  for (let bg of bgs) {
-    bg.style.width = w;
+const productAdded = (code, added) => {
+  for (const prod of added) {
+    const id = prod.productId.split("/").pop();
+    if (id === code) {
+      return prod;
+    } else {
+      return false;
+    }
   }
 };
-export { modCategoryTitle, createCatContainer, resizeBackground };
+
+// const backgroundOverWidth = (w) => {
+//   let bw =
+//     w >= respContainerWidth
+//       ? respContainerWidth + (w - respContainerWidth) * 0.5 + "px"
+//       : (bw = "100%");
+//   return bw;
+// };
+
+// const resizeOverflowedBackground = (bgs, window_width) => {
+//   console.log(bgs, window_width);
+//   bgs.style.width = backgroundOverWidth(window_width);
+//   return;
+//   let w = backgroundOverWidth(window_width);
+//   for (let bg of bgs) {
+//     bg.style.width = w;
+//   }
+// };
+export { modCategoryTitle, createCatContainer };

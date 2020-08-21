@@ -32,14 +32,23 @@ import {
 import {
   modCategoryTitle,
   createCatContainer,
-  resizeBackground,
+  // resizeOverflowedBackground,
 } from "./js/grid-list";
 import { getOriginalBtnData } from "./js/addToCartButton";
 import { getPLPData } from "./js/getPLPData";
 
-const getData = async () => {
+const getProductsData = async () => {
   let jsonData = await getPLPData();
   return jsonData;
+};
+
+const getCartData = async () => {
+  return await napi
+    .cart()
+    .read()
+    .then(function (p) {
+      return p;
+    });
 };
 // =====================================
 // ==DOCUMENT ONREADY==
@@ -474,10 +483,10 @@ document.onreadystatechange = function () {
 
     window.onresize = function (event) {
       updateGlider(sliderLayoutEvent);
-      resizeBackground(
-        document.querySelectorAll(".ProductListGroup__background--overflowed"),
-        document.documentElement.clientWidth
-      );
+      // resizeOverflowedBackground(
+      //   document.querySelectorAll(".ProductListGroup__background--overflowed"),
+      //   document.documentElement.clientWidth
+      // );
     };
 
     // ==========================================================
@@ -489,34 +498,57 @@ document.onreadystatechange = function () {
     // ==================================================
 
     // Mod to the category items
-    getData().then((value) => {
-      let products = value.configuration.eCommerceData.products;
-      for (let cat of product_list_groups) {
-        // Mod to the category title
-        const title = cat.querySelector(".ProductListGroup__title");
-        const productGridContainer = document.createElement("div");
-        productGridContainer.classList.add("ProductListGroupContainer");
-        modCategoryTitle(title);
+    getProductsData().then((value) => {
+      getCartData().then((cart) => {
+        let products = value.configuration.eCommerceData.products;
+        for (let cat of product_list_groups) {
+          // Mod to the category title
+          const title = cat.querySelector(".ProductListGroup__title");
+          const productGridContainer = document.createElement("div");
+          productGridContainer.classList.add("ProductListGroupContainer");
+          modCategoryTitle(title);
+          // resizeOverflowedBackground(
+          //   cat.querySelector(".ProductListGroup__background--overflowed"),
+          //   document.documentElement.clientWidth
+          // );
+          cat
+            .querySelector(".ProductListGroup__content")
+            .appendChild(createCatContainer(cat, products, cart));
 
-        cat
-          .querySelector(".ProductListGroup__content")
-          .appendChild(createCatContainer(cat, products));
+          cat.appendChild(productGridContainer);
+          productGridContainer.appendChild(
+            cat.querySelector(".ProductListGroup__background--overflowed")
+          );
+          productGridContainer.appendChild(title);
+          productGridContainer.appendChild(
+            cat.querySelector(".ProductListGroup__content")
+          );
+        }
 
-        cat.appendChild(productGridContainer);
-        productGridContainer.appendChild(
-          cat.querySelector(".ProductListGroup__background--overflowed")
-        );
-        productGridContainer.appendChild(title);
-        productGridContainer.appendChild(
-          cat.querySelector(".ProductListGroup__content")
-        );
-      }
+        //update from cart
+        window.napi.data().on("cart.update", function (data) {
+          console.log(data);
+          // Each time a customer will update the cart, this function will be trigger
+          // It can be adding or deleting
+          window.napi
+            .cart()
+            .read()
+            .then(function (data) {
+              var firstItem = data.pop();
+              console.log(data);
+
+              // No item in basket
+              if (!firstItem || !firstItem.productId) {
+                return;
+              }
+              var machSKU = firstItem.productId.split("/").pop();
+
+              // [...]the rest of the code you want
+            });
+        });
+      });
     });
 
-    resizeBackground(
-      document.querySelectorAll(".ProductListGroup__background--overflowed"),
-      document.documentElement.clientWidth
-    );
     // ==================================================
     // == END GRID / LIST LAYOUT ========================
     // ==================================================
