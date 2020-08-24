@@ -1,6 +1,6 @@
-// ==============================
-// ==SELECT COMPONENT==
-// ==============================
+// ================================
+// ==SELECT (DROPDOWN) COMPONENT ==
+// ================================
 let select_values;
 
 const setSelectValues = (el) => {
