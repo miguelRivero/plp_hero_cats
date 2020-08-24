@@ -30,6 +30,7 @@ import {
   sliderArrowsNeeded,
 } from "./js/horizontal-scroll";
 import {
+  setCategoriesData,
   modCategoryTitle,
   createCatContainer,
   updateCatContainerWithCart,
@@ -507,7 +508,7 @@ document.onreadystatechange = function () {
           const title = cat.querySelector(".ProductListGroup__title");
           const productGridContainer = document.createElement("div");
           productGridContainer.classList.add("ProductListGroupContainer");
-          modCategoryTitle(title);
+          modCategoryTitle(title, value);
           // resizeOverflowedBackground(
           //   cat.querySelector(".ProductListGroup__background--overflowed"),
           //   document.documentElement.clientWidth

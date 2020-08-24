@@ -8,7 +8,7 @@
 // ==DOCUMENT ONREADY==
 // =====================================
 import "regenerator-runtime/runtime";
-import data from "./categories.json";
+//import data from "./categories.json";
 //import { getPLPData } from "./getPLPData";
 import { getOriginalBtnData, updateBtnsData } from "./addToCartButton";
 
@@ -16,9 +16,10 @@ import { getOriginalBtnData, updateBtnsData } from "./addToCartButton";
 //   let jsonData = await getPLPData();
 //   return jsonData;
 // };
-const categoriesData = data.categories;
-
-let products,
+const dummyText =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+let categoriesData,
+  products,
   respContainerWidth = 996;
 // getData().then((value) => {
 //   products = value.configuration.eCommerceData.products;
@@ -71,8 +72,24 @@ const updateCatContainerWithCart = (el, cart) => {
   }
 };
 
-const modCategoryTitle = (el) => {
+const modCategoryTitle = (el, val) => {
+  setCategoriesData(val);
   el.outerHTML = getCatTitleHTML(el);
+};
+
+const setCategoriesData = (data) => {
+  categoriesData = getCategoriesData(data);
+};
+
+const getCategoriesData = (val) => {
+  const completeCats = val.configuration.eCommerceData.categories;
+  const usedCats = val.configuration.eCommerceData.productGroups;
+
+  return completeCats.filter(function (c1) {
+    return usedCats.some(function (c2) {
+      return c1.id === c2.categoryId;
+    });
+  });
 };
 
 const getCatTitleHTML = (el) => {
@@ -82,7 +99,7 @@ const getCatTitleHTML = (el) => {
 
 const getCatData = (str) => {
   for (const cat of categoriesData) {
-    if (cat.title === str) return cat;
+    if (cat.name === str) return cat;
   }
 };
 
@@ -92,7 +109,7 @@ const createCatTitleHTML = (cat) => {
   <h3 class="ProductListGroup__title">${cat.title}</h3>
   <div class="ProductListGroup__content">
     <div class="ProductListGroup__description">
-      <p>${cat.description}</p>
+      <p>${cat.description || dummyText}</p>
       <!-- <a href="">Discover</a> -->
     </div>
   </div>
@@ -153,4 +170,9 @@ const productAdded = (code, added) => {
 //     bg.style.width = w;
 //   }
 // };
-export { modCategoryTitle, createCatContainer, updateCatContainerWithCart };
+export {
+  setCategoriesData,
+  modCategoryTitle,
+  createCatContainer,
+  updateCatContainerWithCart,
+};
