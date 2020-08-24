@@ -7,7 +7,6 @@
 // =====================================
 // ==DOCUMENT ONREADY==
 // =====================================
-import "regenerator-runtime/runtime";
 //import data from "./categories.json";
 //import { getPLPData } from "./getPLPData";
 import { getOriginalBtnData, updateBtnsData } from "./addToCartButton";
@@ -16,8 +15,9 @@ import { getOriginalBtnData, updateBtnsData } from "./addToCartButton";
 //   let jsonData = await getPLPData();
 //   return jsonData;
 // };
-const dummyText =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+const displayStyle = "grid",
+  dummyText =
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
 let categoriesData,
   products,
   respContainerWidth = 996;
@@ -35,17 +35,23 @@ const createCatContainer = (el, products, cart) => {
   const categoryItemContainer = document.createElement("ul");
   categoryItemContainer.classList.add("ProductListContainer", "grid");
   for (const item of items) {
-    const prodId = item
-        .querySelector(".ProductListElement")
-        .getAttribute("data-product-item-id"),
+    const prodEl = item.querySelector(".ProductListElement"),
+      prodId = prodEl.getAttribute("data-product-item-id"),
       product = getProductBy("internationalId", prodId, products),
       added = productAdded(product.internationalId, cart),
+      display =
+        displayStyle === "list"
+          ? "list"
+          : product.unitQuantity > 1
+          ? "list"
+          : "grid",
       descriptionEl = item.querySelector(".ProductListElement__headline"),
       intensityEl = item.querySelector(".ProductListElement__intensity"),
       progress = createIntensityEl(product.intensity),
       priceEl = item.querySelector(".ProductListElement__price"),
       price = priceEl.textContent || priceEl.innerText,
       li = document.createElement("li");
+    li.classList.add(display);
     //transform description case
     descriptionEl.innerHTML = capitalize(product.headline);
     //adding progress line
@@ -148,7 +154,7 @@ const productAdded = (code, added) => {
     if (id === code) {
       return prod.quantity;
     } else {
-      return false;
+      return 0;
     }
   }
 };

@@ -15,6 +15,7 @@
 require("file-loader?name=[name].[ext]!./index.html");
 var projectName = require("glider-js");
 var CustomSelect = require("vanilla-js-dropdown");
+import "regenerator-runtime/runtime";
 import "./scss/slider.scss";
 import "./scss/grid.scss";
 import "./scss/addToCartButton.scss";
@@ -529,6 +530,7 @@ document.onreadystatechange = function () {
 
         //update from cart
         window.napi.data().on("cart.update", function () {
+          console.log("EVENT cart.update");
           getCartData().then((cart) => {
             for (let cat of product_list_groups) {
               updateCatContainerWithCart(cat, cart);
