@@ -92,20 +92,20 @@
     letter-spacing: 1px;
     line-height: 1.5rem;
   }
-  a {
-    font-family: "NespressoLucas-bold", Helvetica, Arial, sans-serif !important;
-    font-size: 1rem;
-    letter-spacing: 2px;
-    line-height: 1.5rem;
-    margin-top: 21px;
-    display: none;
-    border-bottom: 1px solid white;
-    color: white;
-    font-weight: bold;
-    margin-top: 1.3125rem;
-    text-decoration: none;
-    text-transform: uppercase;
-  }
+  // a {
+  //   font-family: "NespressoLucas-bold", Helvetica, Arial, sans-serif !important;
+  //   font-size: 1rem;
+  //   letter-spacing: 2px;
+  //   line-height: 1.5rem;
+  //   margin-top: 21px;
+  //   display: none;
+  //   border-bottom: 1px solid white;
+  //   color: white;
+  //   font-weight: bold;
+  //   margin-top: 1.3125rem;
+  //   text-decoration: none;
+  //   text-transform: uppercase;
+  // }
 }
 
 .ProductListContainer {
@@ -275,9 +275,9 @@
     padding-top: 0;
     padding-left: 0;
     width: 25%;
-    a {
-      display: inline-block;
-    }
+    // a {
+    //   display: inline-block;
+    // }
   }
 
   .ProductListContainer {

@@ -10,7 +10,7 @@
 import "regenerator-runtime/runtime";
 import data from "./categories.json";
 //import { getPLPData } from "./getPLPData";
-import { getOriginalBtnData } from "./addToCartButton";
+import { getOriginalBtnData, updateBtnsData } from "./addToCartButton";
 
 // const getData = async () => {
 //   let jsonData = await getPLPData();
@@ -64,6 +64,13 @@ const createCatContainer = (el, products, cart) => {
   return categoryItemContainer;
 };
 
+const updateCatContainerWithCart = (el, cart) => {
+  const items = el.querySelectorAll(".ProductListElementFilter");
+  for (const item of items) {
+    updateBtnsData(item.querySelector(".ProductListElement"), cart);
+  }
+};
+
 const modCategoryTitle = (el) => {
   el.outerHTML = getCatTitleHTML(el);
 };
@@ -86,7 +93,7 @@ const createCatTitleHTML = (cat) => {
   <div class="ProductListGroup__content">
     <div class="ProductListGroup__description">
       <p>${cat.description}</p>
-      <a href="">Discover</a>
+      <!-- <a href="">Discover</a> -->
     </div>
   </div>
     `;
@@ -122,7 +129,7 @@ const productAdded = (code, added) => {
   for (const prod of added) {
     const id = prod.productId.split("/").pop();
     if (id === code) {
-      return prod;
+      return prod.quantity;
     } else {
       return false;
     }
@@ -146,4 +153,4 @@ const productAdded = (code, added) => {
 //     bg.style.width = w;
 //   }
 // };
-export { modCategoryTitle, createCatContainer };
+export { modCategoryTitle, createCatContainer, updateCatContainerWithCart };

@@ -32,6 +32,7 @@ import {
 import {
   modCategoryTitle,
   createCatContainer,
+  updateCatContainerWithCart,
   // resizeOverflowedBackground,
 } from "./js/grid-list";
 import { getOriginalBtnData } from "./js/addToCartButton";
@@ -526,25 +527,12 @@ document.onreadystatechange = function () {
         }
 
         //update from cart
-        window.napi.data().on("cart.update", function (data) {
-          console.log(data);
-          // Each time a customer will update the cart, this function will be trigger
-          // It can be adding or deleting
-          window.napi
-            .cart()
-            .read()
-            .then(function (data) {
-              var firstItem = data.pop();
-              console.log(data);
-
-              // No item in basket
-              if (!firstItem || !firstItem.productId) {
-                return;
-              }
-              var machSKU = firstItem.productId.split("/").pop();
-
-              // [...]the rest of the code you want
-            });
+        window.napi.data().on("cart.update", function () {
+          getCartData().then((cart) => {
+            for (let cat of product_list_groups) {
+              updateCatContainerWithCart(cat, cart);
+            }
+          });
         });
       });
     });
