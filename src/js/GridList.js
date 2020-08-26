@@ -9,7 +9,7 @@
 // =====================================
 //import data from "./categories.json";
 //import { getPLPData } from "./getPLPData";
-import { getOriginalBtnData, updateBtnsData } from "./addToCartButton";
+import { getOriginalBtnData, updateBtnsData } from "./AddToCartButton";
 
 // const getData = async () => {
 //   let jsonData = await getPLPData();
@@ -33,12 +33,12 @@ let categoriesData,
 const createCatContainer = (el, products, cart) => {
   const items = el.querySelectorAll(".ProductListElementFilter");
   const categoryItemContainer = document.createElement("ul");
-  categoryItemContainer.classList.add("ProductListContainer", "grid");
+  categoryItemContainer.classList.add("ProductListContainer");
   for (const item of items) {
     const prodEl = item.querySelector(".ProductListElement"),
       prodId = prodEl.getAttribute("data-product-item-id"),
       product = getProductBy("internationalId", prodId, products),
-      added = productAdded(product.internationalId, cart),
+      added = itemsInBasket(product.internationalId, cart),
       display =
         displayStyle === "list"
           ? "list"
@@ -50,7 +50,9 @@ const createCatContainer = (el, products, cart) => {
       progress = createIntensityEl(product.intensity),
       priceEl = item.querySelector(".ProductListElement__price"),
       price = priceEl.textContent || priceEl.innerText,
+      detailsEl = document.createElement("div"),
       li = document.createElement("li");
+    //grid or list style
     li.classList.add(display);
     //transform description case
     descriptionEl.innerHTML = capitalize(product.headline);
@@ -58,12 +60,20 @@ const createCatContainer = (el, products, cart) => {
     intensityEl.innerHTML = progress;
     // adding per capsule price
     priceEl.innerHTML = price + "<span>per capsule</span>";
+    //moving price after intensity
+    intensityEl.parentNode.insertBefore(priceEl, intensityEl.nextSibling);
+    //moving element to details container
+    detailsEl.classList.add("ProductListElement__details");
+    detailsEl.appendChild(prodEl.querySelector(".ProductListElement__name"));
+    detailsEl.appendChild(prodEl.querySelector(".ProductListElement__content"));
+    detailsEl.appendChild(intensityEl);
+    detailsEl.appendChild(priceEl);
+    prodEl.appendChild(detailsEl);
     //adding Add to Cart btn
-    getOriginalBtnData(
-      item.querySelectorAll(".AddToBagButton"),
-      product,
-      added
-    );
+    const add_btn = getOriginalBtnData(prodEl, product, added);
+    prodEl.appendChild(add_btn);
+    // add class if is in basket
+    if (added) prodEl.classList.add("ProductInBasket");
     //creating a li and moving the item inside
     li.appendChild(item);
     categoryItemContainer.appendChild(li);
@@ -71,10 +81,11 @@ const createCatContainer = (el, products, cart) => {
   return categoryItemContainer;
 };
 
-const updateCatContainerWithCart = (el, cart) => {
-  const items = el.querySelectorAll(".ProductListElementFilter");
+const updateCatContainerWithCart = (cart, first) => {
+  const items = document.querySelectorAll(".ProductListElement");
   for (const item of items) {
-    updateBtnsData(item.querySelector(".ProductListElement"), cart);
+    console.log(item);
+    updateBtnsData(item, cart, first);
   }
 };
 
@@ -148,34 +159,16 @@ const getProductBy = (attr, name, products) => {
   }
 };
 
-const productAdded = (code, added) => {
-  for (const prod of added) {
-    const id = prod.productId.split("/").pop();
-    if (id === code) {
-      return prod.quantity;
-    } else {
-      return 0;
-    }
+const itemsInBasket = (code, added) => {
+  let data = added.find(function (ele) {
+    return ele.productId.split("/").pop() === code;
+  });
+  if (data) {
+    return data.quantity;
+  } else {
+    return 0;
   }
 };
-
-// const backgroundOverWidth = (w) => {
-//   let bw =
-//     w >= respContainerWidth
-//       ? respContainerWidth + (w - respContainerWidth) * 0.5 + "px"
-//       : (bw = "100%");
-//   return bw;
-// };
-
-// const resizeOverflowedBackground = (bgs, window_width) => {
-//   console.log(bgs, window_width);
-//   bgs.style.width = backgroundOverWidth(window_width);
-//   return;
-//   let w = backgroundOverWidth(window_width);
-//   for (let bg of bgs) {
-//     bg.style.width = w;
-//   }
-// };
 export {
   setCategoriesData,
   modCategoryTitle,

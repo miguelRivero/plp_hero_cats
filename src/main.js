@@ -17,11 +17,11 @@ var projectName = require("glider-js");
 var CustomSelect = require("vanilla-js-dropdown");
 import "regenerator-runtime/runtime";
 import "./scss/slider.scss";
-import "./scss/grid.scss";
+import "./scss/gridList.scss";
 import "./scss/addToCartButton.scss";
 import throttle from "raf-throttle";
-import { setSelectValues, createTechnologiesDropdown } from "./js/select.js";
-import { getCategories } from "./js/categories-data";
+import { setSelectValues, createTechnologiesDropdown } from "./js/Select.js";
+import { getCategories } from "./js/CategoriesData";
 import {
   setSlidesElement,
   setSliderContainer,
@@ -29,16 +29,16 @@ import {
   sliderRequired,
   getSlidesAverageWidth,
   sliderArrowsNeeded,
-} from "./js/horizontal-scroll";
+} from "./js/HorizontalScroll";
 import {
   setCategoriesData,
   modCategoryTitle,
   createCatContainer,
   updateCatContainerWithCart,
   // resizeOverflowedBackground,
-} from "./js/grid-list";
-import { getOriginalBtnData } from "./js/addToCartButton";
-import { getPLPData } from "./js/getPLPData";
+} from "./js/GridList";
+import { updateBtnsData } from "./js/AddToCartButton";
+import { getPLPData } from "./js/GetPLPData";
 
 const getProductsData = async () => {
   let jsonData = await getPLPData();
@@ -52,6 +52,22 @@ const getCartData = async () => {
     .then(function (p) {
       return p;
     });
+};
+
+let smallScreen;
+
+// Set/update the viewportWidth value
+const isSmallScreen = () => {
+  return (window.innerWidth || document.documentElement.clientWidth) < 996;
+};
+
+const setSmallScreenClass = () => {
+  smallScreen = isSmallScreen();
+  if (smallScreen) {
+    document.getElementById("main").classList.add("Main--smallScreen");
+  } else {
+    document.getElementById("main").classList.remove("Main--smallScreen");
+  }
 };
 // =====================================
 // ==DOCUMENT ONREADY==
@@ -85,6 +101,8 @@ document.onreadystatechange = function () {
         detail: { sticky: null },
       });
 
+    //Set viewport width screen class
+    setSmallScreenClass();
     //Adding the Slider to the DOM
     const slider = document.createElement("div");
     slider.classList.add("ProductListCategories");
@@ -485,6 +503,7 @@ document.onreadystatechange = function () {
     // ==================================================
 
     window.onresize = function (event) {
+      setSmallScreenClass();
       updateGlider(sliderLayoutEvent);
       // resizeOverflowedBackground(
       //   document.querySelectorAll(".ProductListGroup__background--overflowed"),
@@ -503,7 +522,8 @@ document.onreadystatechange = function () {
     // Mod to the category items
     getProductsData().then((value) => {
       getCartData().then((cart) => {
-        let products = value.configuration.eCommerceData.products;
+        let products = value.configuration.eCommerceData.products,
+          firstPageLoad;
         for (let cat of product_list_groups) {
           // Mod to the category title
           const title = cat.querySelector(".ProductListGroup__title");
@@ -529,13 +549,13 @@ document.onreadystatechange = function () {
         }
 
         //update from cart
-        window.napi.data().on("cart.update", function () {
+
+        window.napi.data().on("cart.update", function (event) {
           console.log("EVENT cart.update");
           getCartData().then((cart) => {
-            for (let cat of product_list_groups) {
-              updateCatContainerWithCart(cat, cart);
-            }
+            updateCatContainerWithCart(cart, firstPageLoad);
           });
+          firstPageLoad = false;
         });
       });
     });
@@ -548,3 +568,4 @@ document.onreadystatechange = function () {
 // =====================================
 // ==END DOCUMENT ONREADY==
 // =====================================
+export { smallScreen };

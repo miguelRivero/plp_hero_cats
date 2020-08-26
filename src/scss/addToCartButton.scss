@@ -42,6 +42,39 @@ input:invalid {
     }
   }
 }
+
+.grid {
+}
+
+.Main--smallScreen {
+  .list {
+    .AddToBagButton__stepper {
+      &.incart,
+      &.empty {
+        width: 40px;
+        .AddToBagButton__incart,
+        .AddToBagButton__decrease,
+        .AddToBagButton__increase {
+          width: 40px;
+          border-radius: 100%;
+          left: 0;
+        }
+        .AddToBagButton__decrease,
+        .AddToBagButton__increase {
+          left: 0;
+        }
+
+        .AddToBagButton__empty {
+          display: none;
+        }
+        .AddToBagButton__input {
+          width: 0;
+          opacity: 0;
+        }
+      }
+    }
+  }
+}
 .AddToBagButton__stepper {
   display: inline-block;
   position: relative;
