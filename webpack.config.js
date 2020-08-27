@@ -6,8 +6,24 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 // const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
 //   .BundleAnalyzerPlugin;
-const isDevelopment = process.env.NODE_ENV === "development";
-const bundle = false;
+//const isDevelopment = process.env.NODE_ENV === "development";
+const bundle = true;
+const splitConfig = {
+  chunks: "all",
+  minSize: 15000,
+  maxSize: 19480,
+  cacheGroups: {
+    // Merge all the CSS into one file
+    styles: {
+      name: "styles",
+      test: /\.s?css$/,
+      chunks: "all",
+      minChunks: 1,
+      reuseExistingChunk: true,
+      enforce: true,
+    },
+  },
+};
 
 var config = {
   context: __dirname + "/src", // `__dirname` is root of project and `/src` is source
@@ -41,9 +57,7 @@ var config = {
         test: /\.s(a|c)ss$/,
         exclude: /\.module.(s(a|c)ss)$/,
         use: [
-          isDevelopment || bundle
-            ? "style-loader"
-            : MiniCssExtractPlugin.loader,
+          bundle ? "style-loader" : MiniCssExtractPlugin.loader,
           {
             loader: "css-loader", // translates CSS into CommonJS
             options: {
@@ -54,7 +68,7 @@ var config = {
           {
             loader: "sass-loader",
             options: {
-              sourceMap: isDevelopment,
+              sourceMap: false,
             },
           },
         ],
@@ -91,7 +105,7 @@ var config = {
           },
           output: {
             beautify: false,
-            comments: bundle,
+            comments: false,
           },
         },
       }),
@@ -101,30 +115,15 @@ var config = {
         },
       }),
     ],
-    splitChunks: {
-      chunks: "all",
-      minSize: 15000,
-      maxSize: 19480,
-      cacheGroups: {
-        // Merge all the CSS into one file
-        styles: {
-          name: "styles",
-          test: /\.s?css$/,
-          chunks: "all",
-          minChunks: 1,
-          reuseExistingChunk: true,
-          enforce: true,
-        },
-      },
-    },
+    splitChunks: !bundle ? splitConfig : {},
   },
 };
 
 if (!bundle) {
   config.plugins.push(
     new MiniCssExtractPlugin({
-      filename: isDevelopment ? "[name].css" : "[name].[hash].css",
-      chunkFilename: isDevelopment ? "[id].css" : "[id].[hash].css",
+      filename: "[name].css",
+      chunkFilename: "[id].css",
     })
   );
 }
