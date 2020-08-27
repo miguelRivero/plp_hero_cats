@@ -7,7 +7,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 // const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
 //   .BundleAnalyzerPlugin;
 //const isDevelopment = process.env.NODE_ENV === "development";
-const bundle = true;
+const bundle = false;
 const splitConfig = {
   chunks: "all",
   minSize: 15000,

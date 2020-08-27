@@ -50,6 +50,9 @@ document.onreadystatechange = function () {
       last_slider_layout,
       tabs_display_style,
       categories = [],
+      smartBanner = document.querySelector(".smartbanner"),
+      dynamicBanner = document.querySelector(".dynamic_banner"),
+      headerTopWrapper = document.querySelector(".Header__top-wrapper"),
       sliderLayoutEvent = new CustomEvent("slider-sticky-state", {
         detail: { sticky: null },
       });
@@ -159,17 +162,22 @@ document.onreadystatechange = function () {
     };
 
     const getSliderTopOffset = () => {
-      let topPositionedElements = [
-        document.querySelector(".smartbanner"),
-        document.querySelector(".dynamic_banner"),
-        document.querySelector(".Header__top-wrapper"),
-      ];
+      //Check if these elements exist in DOM  and define them for future use
+      smartBanner = smartBanner
+        ? smartBanner
+        : document.querySelector(".smartbanner");
+      dynamicBanner = dynamicBanner
+        ? dynamicBanner
+        : document.querySelector(".dynamic_banner");
+      headerTopWrapper = headerTopWrapper
+        ? headerTopWrapper
+        : document.querySelector(".Header__top-wrapper");
 
-      console.log(document.querySelector(".smartbanner"));
-      console.log(
-        document.querySelector(".smartbanner").getBoundingClientRect()
-      );
-      const filtered_args = topPositionedElements.filter(function (el) {
+      const filtered_args = [
+          smartBanner,
+          dynamicBanner,
+          headerTopWrapper,
+        ].filter(function (el) {
           return el != null;
         }),
         offset_array = [];
