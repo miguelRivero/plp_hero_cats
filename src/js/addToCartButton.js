@@ -87,7 +87,7 @@ const updateBtnValues = (prod, number, reload) => {
 
 const singleButtonStyle = (el, num) => {
   console.log("singleButtonStyle");
-  console.log(el, number);
+  console.log(el, num);
   if (num === 0) {
     console.log("0 = incart -> empty");
     el.classList.remove("incart");
