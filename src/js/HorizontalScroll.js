@@ -19,6 +19,12 @@ const getEachSlideWidth = () => {
 };
 
 const getSlidesAverageWidth = () => {
+  // One of the Glider hacks in order to avoid the fixed width, which
+  // is neccesarry to maintain other useful features, is to give a false
+  // fixed width, obtained by making a normalization of the individual slides
+  // widths.
+  // This width is canceled by css with a width:auto !important rule. But it's
+  // useful for other internal calculations of the slider
   return (
     Math.ceil(
       getEachSlideWidth().reduce((a, b) => a + b, 0) /

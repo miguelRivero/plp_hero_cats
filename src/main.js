@@ -17,8 +17,8 @@ var projectName = require("glider-js");
 var CustomSelect = require("vanilla-js-dropdown");
 import "./scss/slider.scss";
 import throttle from "raf-throttle";
-import { setSelectValues, createTechnologiesDropdown } from "./js/select.js";
-import { getCategories } from "./js/categories-data.js";
+import { setSelectValues, createTechnologiesDropdown } from "./js/Select.js";
+import { getCategories } from "./js/CategoriesData.js";
 import {
   setSlidesElement,
   setSliderContainer,
@@ -26,7 +26,7 @@ import {
   sliderRequired,
   getSlidesAverageWidth,
   sliderArrowsNeeded,
-} from "./js/horizontal-scroll.js";
+} from "./js/HorizontalScroll.js";
 
 // =====================================
 // ==DOCUMENT ONREADY==
@@ -37,12 +37,9 @@ document.onreadystatechange = function () {
     const products_title = ".ProductList__title",
       productsTitleElement = document.querySelector(products_title),
       product_list_groups = document.querySelectorAll(".ProductListGroup"),
-      header_top = document.querySelector(".Header__top-wrapper"),
       imagesStorage =
         "https://raw.githubusercontent.com/miguelRivero/plp_hero_cats/master/dist/images/",
       imagePlaceholder = imagesStorage + "placeholder.jpg",
-      smart_banner = document.querySelector(".smartbanner"),
-      dynamic_banner = document.querySelector(".dynamic_banner"),
       technologiesElement = document.querySelector(".ProductListTechnologies")
         ? document.querySelector(".ProductListTechnologies")
         : false;
@@ -61,7 +58,10 @@ document.onreadystatechange = function () {
     const slider = document.createElement("div");
     slider.classList.add("ProductListCategories");
     slider.innerHTML = addProductListNavigationComponent();
-    insertAfter(slider, productsTitleElement);
+    productsTitleElement.parentNode.insertBefore(
+      slider,
+      productsTitleElement.nextSibling
+    );
 
     const btnContainer = document.querySelector(".ProductListCategoriesSlider");
     const btns = btnContainer.querySelectorAll(
@@ -140,9 +140,6 @@ document.onreadystatechange = function () {
     `;
     }
 
-    function insertAfter(el, referenceNode) {
-      referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
-    }
     // ==============================
     // ==END SLIDER COMPONENT========
     // ==============================
@@ -152,7 +149,7 @@ document.onreadystatechange = function () {
     // ==For sticky functionality==
     // ===================================
 
-    const getTopOffset = (element) => {
+    const getElementTopOffset = (element) => {
       if (typeof element != "undefined" && element != null) {
         let rect = element.getBoundingClientRect();
         return rect.top + rect.height;
@@ -162,14 +159,22 @@ document.onreadystatechange = function () {
     };
 
     const getSliderTopOffset = () => {
-      const filtered_args = [header_top, dynamic_banner, smart_banner].filter(
-          function (el) {
-            return el != null;
-          }
-        ),
+      let topPositionedElements = [
+        document.querySelector(".smartbanner"),
+        document.querySelector(".dynamic_banner"),
+        document.querySelector(".Header__top-wrapper"),
+      ];
+
+      console.log(document.querySelector(".smartbanner"));
+      console.log(
+        document.querySelector(".smartbanner").getBoundingClientRect()
+      );
+      const filtered_args = topPositionedElements.filter(function (el) {
+          return el != null;
+        }),
         offset_array = [];
       for (const el of filtered_args) {
-        if (el !== null) offset_array.push(getTopOffset(el));
+        if (el !== null) offset_array.push(getElementTopOffset(el));
       }
       return Math.max(...offset_array);
     };
@@ -395,6 +400,10 @@ document.onreadystatechange = function () {
                 offsetTop - safety_top_offset - 145
               );
               window.setTimeout(function () {
+                // Because the Header changes when scrolling, we don't know the
+                // real dimensions it will have when the slider gets sticky.
+                // Thats why we have to recalculate it and apply the position with right
+                // measures afterwards
                 toggleStickySlider();
                 offsetTop = Math.ceil(document.getElementById(link).offsetTop);
                 safety_top_offset = getSafetyOffset();
@@ -411,7 +420,7 @@ document.onreadystatechange = function () {
     };
 
     const scrollAnimated = (y) => {
-      // To avoid duplicate firing (html and body)
+      // To avoid duplicate firing (html and body) we use the boolean var
       let gotDone = false;
       $("html, body").animate({ scrollTop: y }, 500, function () {
         if (!gotDone) {
