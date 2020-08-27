@@ -53,15 +53,14 @@ const getOriginalBtnData = (ele, product, added) => {
   // }
 };
 
-const updateBtnsData = (article, bought, first) => {
-  if (bought.length) {
-    for (let b of bought) {
+const updateBtnsData = (article, article_id, cart, first) => {
+  if (cart && cart.length) {
+    for (const item of cart) {
       let updated_q;
-      if (article_id === b.productId.split("/").pop()) {
-        // console.log("article_id = " + article_id);
-        // console.log("b.quantity = " + b.quantity);
-        updated_q = b.quantity;
+      if (article_id === item.productId.split("/").pop()) {
+        updated_q = item.quantity;
       } else {
+        //For removed items
         updated_q = 0;
       }
       updateBtnValues(article, updated_q, first);
@@ -72,24 +71,32 @@ const updateBtnsData = (article, bought, first) => {
 };
 
 const updateBtnValues = (prod, number, reload) => {
-  console.log(prod, number, reload);
+  console.log("updateBtnValues");
+  console.log(reload);
+
+  //reload is for styling as 1 button (without input visible)
   prod.querySelector(".AddToBagButton__input").setAttribute("value", number);
   prod.querySelector(".AddToBagButton__incart").innerHTML = number;
   console.log("updateBtnValues,  reload = ", reload);
   const sel = prod.querySelector(".AddToBagButton__stepper");
-
   //set style when page loads
-  if (reload) {
-    if (number === 0) {
-      console.log("0 = incart -> empty");
-      sel.classList.remove("incart");
-      sel.classList.add("empty");
-    } else {
-      console.log("!0 = empty -> incart");
-      sel.classList.remove("empty");
-      sel.classList.add("incart");
-      console.log("_______________");
-    }
+  if (reload || number === 0) {
+    singleButtonStyle(sel, number);
+  }
+};
+
+const singleButtonStyle = (el, num) => {
+  console.log("singleButtonStyle");
+  console.log(el, number);
+  if (num === 0) {
+    console.log("0 = incart -> empty");
+    el.classList.remove("incart");
+    el.classList.add("empty");
+  } else {
+    console.log("!0 = empty -> incart");
+    el.classList.remove("empty");
+    el.classList.add("incart");
+    console.log("_______________");
   }
 };
 
@@ -169,9 +176,8 @@ const stepperInput = (event, prod_id, inc, disable) => {
 
 const addToCart = (id, val) => {
   window.CartManager.updateItem(id, val)
-    .then((data) => {
-      console.log(data);
-      eventHub.$emit("cart.update2", id);
+    .then(() => {
+      //eventHub.$emit("cart.update2", id);
     })
     .catch(() => {
       console.log("Error adding item to cart");

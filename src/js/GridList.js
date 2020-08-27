@@ -15,7 +15,7 @@ import { getOriginalBtnData, updateBtnsData } from "./AddToCartButton";
 //   let jsonData = await getPLPData();
 //   return jsonData;
 // };
-const displayStyle = "grid",
+const displayStyle = "list",
   dummyText =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
 let categoriesData,
@@ -84,8 +84,18 @@ const createCatContainer = (el, products, cart) => {
 const updateCatContainerWithCart = (cart, first) => {
   const items = document.querySelectorAll(".ProductListElement");
   for (const item of items) {
-    console.log(item);
-    updateBtnsData(item, cart, first);
+    if (cart.length) {
+      const itemId = item.getAttribute("data-product-item-id"),
+        added = itemsInBasket(itemId, cart);
+      if (added) {
+        item.classList.add("ProductInBasket");
+      } else {
+        item.classList.remove("ProductInBasket");
+      }
+      updateBtnsData(item, itemId, cart, first);
+    } else {
+      updateBtnsData(item, null, null, first);
+    }
   }
 };
 

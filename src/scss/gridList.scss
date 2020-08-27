@@ -128,6 +128,13 @@
     border: 1px solid #e3e3e3;
     border-top: 0;
     background-color: #f6f4f2;
+
+    .limited_edition__text,
+    .ch_fairtrade-icon,
+    .ch_prodLabel,
+    .ProductListElement__cup-size {
+      display: none;
+    }
     .ProductListElement__image {
       width: auto;
       display: block;
@@ -146,7 +153,7 @@
     &.list {
       width: 100%;
       margin-bottom: 16px;
-
+      border-top: 1px solid #e3e3e3;
       .ProductListElement {
         padding: 8px 10px 8px 16px;
         text-align: left;
@@ -154,9 +161,14 @@
         display: flex;
         align-items: center;
         height: unset;
+        justify-content: space-between;
+      }
+      .ProductListElement__image {
+        //width: 12%;
       }
       .ProductListElement__details {
         padding-left: 16px;
+        //width: 66%;
       }
       .ProductListElement__name {
         font-size: 0.75rem;
@@ -197,6 +209,9 @@
       .ProductListElement__name,
       .ProductListElement__price {
         margin-left: 0;
+      }
+      .ProductListElement__add-to-basket {
+        //width: 22%;
       }
     }
 
@@ -243,14 +258,6 @@
       .ProductListElement__price {
         width: 100%;
         display: block;
-      }
-
-      .limited_edition__text,
-      .ch_fairtrade-icon,
-      .ch_prodLabel,
-  //    .AddToBagButton__container,
-      .ProductListElement__cup-size {
-        display: none;
       }
 
       .ProductListElement__intensity {
@@ -375,6 +382,7 @@
         &:nth-child(even) {
           border-left: 1px solid #e3e3e3;
         }
+        &:last-child,
         &:nth-child(3) {
           border-right: 1px solid #e3e3e3;
         }
@@ -392,7 +400,11 @@
           letter-spacing: 2px;
           padding: 24px 56px 24px 20px;
         }
+        .ProductListElement__image {
+          width: 12%;
+        }
         .ProductListElement__details {
+          width: 66%;
           position: relative;
           margin-right: 16px;
           & > div {
@@ -414,6 +426,9 @@
         }
         .ProductListElement__information {
           width: 100%;
+        }
+        .ProductListElement__add-to-basket {
+          width: 22%;
         }
       }
     }
