@@ -31,37 +31,30 @@ import {
   sliderArrowsNeeded,
 } from "./js/HorizontalScroll";
 import {
-  setCategoriesData,
+  //setCategoriesData,
   modCategoryTitle,
   createCatContainer,
   updateCatContainerWithCart,
   // resizeOverflowedBackground,
 } from "./js/GridList";
-import { updateBtnsData } from "./js/AddToCartButton";
-import { getPLPData } from "./js/GetPLPData";
+//import { updateBtnsData } from "./js/AddToCartButton";
+import { getPLPData, getCartData } from "./js/GetAsyncData";
 
-const getProductsData = async () => {
-  let jsonData = await getPLPData();
-  return jsonData;
-};
+// const getProductsData = async () => {
+//   return getPLPData();
+// };
 
-const getCartData = async () => {
-  return await napi
-    .cart()
-    .read()
-    .then(function (p) {
-      return p;
-    });
-};
+// const getBasketData = async () => {
+//   return getCartData();
+// };
 
 let smallScreen;
-
 // Set/update the viewportWidth value
 const isSmallScreen = () => {
-  return (window.innerWidth || document.documentElement.clientWidth) < 996;
+  return (window.innerWidth || document.documentElement.clientWidth) < 786;
 };
 
-const setSmallScreenClass = () => {
+const setSmallScreen = () => {
   smallScreen = isSmallScreen();
   if (smallScreen) {
     document.getElementById("main").classList.add("Main--smallScreen");
@@ -99,7 +92,7 @@ document.onreadystatechange = function () {
       });
 
     //Set viewport width screen class
-    setSmallScreenClass();
+    setSmallScreen();
     //Adding the Slider to the DOM
     const slider = document.createElement("div");
     slider.classList.add("ProductListCategories");
@@ -515,15 +508,6 @@ document.onreadystatechange = function () {
     // ==END TITLE / TABS LAYOUT ORDER ==================
     // ==================================================
 
-    window.onresize = function (event) {
-      setSmallScreenClass();
-      updateGlider(sliderLayoutEvent);
-      // resizeOverflowedBackground(
-      //   document.querySelectorAll(".ProductListGroup__background--overflowed"),
-      //   document.documentElement.clientWidth
-      // );
-    };
-
     // ==========================================================
     // ================ SECOND PHASE ============================
     // ==========================================================
@@ -533,25 +517,30 @@ document.onreadystatechange = function () {
     // ==================================================
 
     // Mod to the category items
-    getProductsData().then((value) => {
-      getCartData().then((cart) => {
+    const runGridListTest = async () => {
+      try {
+        const value = await getPLPData();
+        const cart = await getCartData();
+        document.getElementById("main").classList.add("PhaseTwoReady");
         let products = value.configuration.eCommerceData.products,
           firstPageLoad;
         for (let cat of product_list_groups) {
-          // Mod to the category title
-          const title = cat.querySelector(".ProductListGroup__title");
+          //Create container for Category title, description and grid/list
           const productGridContainer = document.createElement("div");
           productGridContainer.classList.add("ProductListGroupContainer");
-          modCategoryTitle(title, value);
-          // resizeOverflowedBackground(
-          //   cat.querySelector(".ProductListGroup__background--overflowed"),
-          //   document.documentElement.clientWidth
-          // );
+          // Mod to the category title
+          const title = cat.querySelector(".ProductListGroup__title");
+          title.outerHTML = modCategoryTitle(title, value);
+          //          console.log(modCategoryTitle(title, value));
+          //Look for created grid/list content and append content
+          const items = cat.querySelectorAll(".ProductListElementFilter");
+          const catContainer = createCatContainer(cat, items, products, cart);
+          console.log(catContainer);
           cat
             .querySelector(".ProductListGroup__content")
-            .appendChild(createCatContainer(cat, products, cart));
+            .appendChild(catContainer);
 
-          cat.appendChild(productGridContainer);
+          //Append backgroud, category title and gris/list content
           productGridContainer.appendChild(
             cat.querySelector(".ProductListGroup__background--overflowed")
           );
@@ -559,25 +548,38 @@ document.onreadystatechange = function () {
           productGridContainer.appendChild(
             cat.querySelector(".ProductListGroup__content")
           );
+          //Append transformed markup to category
+          cat.appendChild(productGridContainer);
         }
-
         //update from cart
-
-        window.napi.data().on("cart.update", function (event) {
+        window.napi.data().on("cart.update", async function (event) {
           console.log("EVENT cart.update");
-          getCartData().then((cart) => {
-            updateCatContainerWithCart(cart, firstPageLoad);
-          });
+          const cart = await getBasketData();
+          updateCatContainerWithCart(cart, firstPageLoad);
           firstPageLoad = false;
         });
-      });
-    });
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-    // ==================================================
+    runGridListTest();
+
+    // // ==================================================
     // == END GRID / LIST LAYOUT ========================
     // ==================================================
+
+    window.onresize = function (event) {
+      setSmallScreen();
+      updateGlider(sliderLayoutEvent);
+      // resizeOverflowedBackground(
+      //   document.querySelectorAll(".ProductListGroup__background--overflowed"),
+      //   document.documentElement.clientWidth
+      // );
+    };
   }
 };
+
 // =====================================
 // ==END DOCUMENT ONREADY==
 // =====================================

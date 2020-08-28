@@ -17,183 +17,185 @@ input:invalid {
   box-shadow: none;
 }
 
-.ProductListElement__add-to-basket {
-  float: none;
-  display: block;
-  padding: 1rem 0 1.5rem;
-  button {
-    &.AddToBagButton {
-      display: none;
-    }
-  }
-}
-
-.AddToBagButton {
-  border: none;
-  &[disabled] {
-    //to ensure out of stock text has space
-    .empty {
-      width: 90%;
-    }
+.PhaseTwoReady {
+  .ProductListElement__add-to-basket {
+    float: none;
+    display: block;
+    padding: 1rem 0 1.5rem;
     button {
-      background-color: #e3e3e3;
-      color: #707070;
-      pointer-events: none;
+      &.AddToBagButton {
+        display: none;
+      }
     }
   }
-}
 
-.grid {
-}
+  .AddToBagButton {
+    border: none;
+    &[disabled] {
+      //to ensure out of stock text has space
+      .empty {
+        width: 90%;
+      }
+      button {
+        background-color: #e3e3e3;
+        color: #707070;
+        pointer-events: none;
+      }
+    }
+  }
 
-.Main--smallScreen {
-  .list {
-    .AddToBagButton__stepper {
-      &.incart,
-      &.empty {
-        width: 40px;
-        .AddToBagButton__incart,
-        .AddToBagButton__decrease,
-        .AddToBagButton__increase {
+  .grid {
+  }
+
+  .Main--smallScreen {
+    .list {
+      .AddToBagButton__stepper {
+        &.incart,
+        &.empty {
           width: 40px;
-          border-radius: 100%;
-          left: 0;
-        }
-        .AddToBagButton__decrease,
-        .AddToBagButton__increase {
-          left: 0;
-        }
+          .AddToBagButton__incart,
+          .AddToBagButton__decrease,
+          .AddToBagButton__increase {
+            width: 40px;
+            border-radius: 100%;
+            left: 0;
+          }
+          .AddToBagButton__decrease,
+          .AddToBagButton__increase {
+            left: 0;
+          }
 
-        .AddToBagButton__empty {
-          display: none;
-        }
-        .AddToBagButton__input {
-          width: 0;
-          opacity: 0;
+          .AddToBagButton__empty {
+            display: none;
+          }
+          .AddToBagButton__input {
+            width: 0;
+            opacity: 0;
+          }
         }
       }
     }
   }
-}
-.ProductInBasket {
-}
-.AddToBagButton__stepper {
-  display: inline-block;
-  position: relative;
-
-  button {
-    height: 40px;
-    width: 40px;
-    color: white;
-    font-family: "NespressoLucas-light", Helvetica, Arial, sans-serif !important;
-    line-height: 2rem;
-    font-size: 2rem;
-    padding: 0.2rem;
-    position: absolute;
-    top: 0;
+  .ProductInBasket {
   }
+  .AddToBagButton__stepper {
+    display: inline-block;
+    position: relative;
+
+    button {
+      height: 40px;
+      width: 40px;
+      color: white;
+      font-family: "NespressoLucas-light", Helvetica, Arial, sans-serif !important;
+      line-height: 2rem;
+      font-size: 2rem;
+      padding: 0.2rem;
+      position: absolute;
+      top: 0;
+    }
+    .AddToBagButton__incart,
+    .AddToBagButton__empty {
+      font-size: 1rem;
+      font-family: "NespressoLucas-normal", Helvetica, Arial, sans-serif !important;
+      letter-spacing: 0.0938rem;
+      line-height: 1rem;
+      text-align: center;
+      width: 100%;
+      white-space: nowrap;
+      border: none;
+      border-radius: 24px;
+      background: #2e8561;
+      transition: background 0.3s ease;
+      &:hover {
+        background: #215e45;
+      }
+    }
+    &.incart,
+    &.empty {
+      .AddToBagButton__decrease,
+      .AddToBagButton__increase {
+        width: 50%;
+        border-radius: 24px;
+        left: 25%;
+      }
+    }
+    &.incart {
+      .AddToBagButton__incart {
+        display: block;
+      }
+      .AddToBagButton__empty {
+        display: none;
+      }
+    }
+    &.empty {
+      .AddToBagButton__incart {
+        display: none;
+      }
+      .AddToBagButton__empty {
+        display: block;
+      }
+    }
+  }
+
   .AddToBagButton__incart,
   .AddToBagButton__empty {
+    display: none;
+  }
+  .AddToBagButton__input {
+    box-sizing: border-box;
+    width: 126px;
+    height: 40px;
+    border: 0.5px solid white;
+    border-radius: 20px;
+    background-color: #ffffff;
+    color: #000;
+    font-family: "NespressoLucas-bold", Helvetica, Arial, sans-serif !important;
     font-size: 1rem;
-    font-family: "NespressoLucas-normal", Helvetica, Arial, sans-serif !important;
-    letter-spacing: 0.0938rem;
+    font-weight: bold;
+    letter-spacing: 1.5px;
     line-height: 1rem;
     text-align: center;
-    width: 100%;
-    white-space: nowrap;
-    border: none;
-    border-radius: 24px;
+    transition: width 0.7s ease-out;
+    &:focus,
+    &:active {
+      border-color: #dbdbdb;
+    }
+  }
+  .AddToBagButton__decrease,
+  .AddToBagButton__increase {
+    border-radius: 50%;
     background: #2e8561;
-    transition: background 0.3s ease;
+    border: none;
     &:hover {
       background: #215e45;
     }
-  }
-  &.incart,
-  &.empty {
-    .AddToBagButton__decrease,
-    .AddToBagButton__increase {
-      width: 50%;
-      border-radius: 24px;
-      left: 25%;
+    span {
+      position: absolute;
     }
   }
-  &.incart {
-    .AddToBagButton__incart {
-      display: block;
+  .AddToBagButton__decrease {
+    span {
+      font-size: 3.75rem;
+      top: calc(50% - 18px);
+      left: calc(50% - 8px);
     }
-    .AddToBagButton__empty {
-      display: none;
-    }
-  }
-  &.empty {
-    .AddToBagButton__incart {
-      display: none;
-    }
-    .AddToBagButton__empty {
-      display: block;
-    }
-  }
-}
 
-.AddToBagButton__incart,
-.AddToBagButton__empty {
-  display: none;
-}
-.AddToBagButton__input {
-  box-sizing: border-box;
-  width: 126px;
-  height: 40px;
-  border: 0.5px solid white;
-  border-radius: 20px;
-  background-color: #ffffff;
-  color: #000;
-  font-family: "NespressoLucas-bold", Helvetica, Arial, sans-serif !important;
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: 1.5px;
-  line-height: 1rem;
-  text-align: center;
-  transition: width 0.7s ease-out;
-  &:focus,
-  &:active {
-    border-color: #dbdbdb;
+    // background-size: 100% calc(50% - 1px);
+    left: 0;
+    // &:hover {
+    //   background-size: 100% calc(50% - 1px);
+    // }
   }
-}
-.AddToBagButton__decrease,
-.AddToBagButton__increase {
-  border-radius: 50%;
-  background: #2e8561;
-  border: none;
-  &:hover {
-    background: #215e45;
+  .AddToBagButton__increase {
+    span {
+      font-size: 2.5rem;
+      top: calc(50% - 19px);
+      left: calc(50% - 12px);
+    }
+    // background-size: calc(50% - 1px) calc(50% - 1px);
+    right: 0;
+    // &:hover {
+    //   background-size: calc(50% - 1px) calc(50% - 1px);
+    // }
   }
-  span {
-    position: absolute;
-  }
-}
-.AddToBagButton__decrease {
-  span {
-    font-size: 3.75rem;
-    top: calc(50% - 18px);
-    left: calc(50% - 8px);
-  }
-
-  // background-size: 100% calc(50% - 1px);
-  left: 0;
-  // &:hover {
-  //   background-size: 100% calc(50% - 1px);
-  // }
-}
-.AddToBagButton__increase {
-  span {
-    font-size: 2.5rem;
-    top: calc(50% - 19px);
-    left: calc(50% - 12px);
-  }
-  // background-size: calc(50% - 1px) calc(50% - 1px);
-  right: 0;
-  // &:hover {
-  //   background-size: calc(50% - 1px) calc(50% - 1px);
-  // }
 }

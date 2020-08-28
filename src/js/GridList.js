@@ -1,14 +1,3 @@
-// require("file-loader?name=[name].[ext]!./index.html");
-// var projectName = require("glider-js");
-// var CustomSelect = require("vanilla-js-dropdown");
-// //import "./scss/slider.scss";
-// import throttle from "raf-throttle";
-
-// =====================================
-// ==DOCUMENT ONREADY==
-// =====================================
-//import data from "./categories.json";
-//import { getPLPData } from "./getPLPData";
 import { getOriginalBtnData, updateBtnsData } from "./AddToCartButton";
 
 // const getData = async () => {
@@ -18,20 +7,19 @@ import { getOriginalBtnData, updateBtnsData } from "./AddToCartButton";
 const displayStyle = "list",
   dummyText =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
-let categoriesData,
-  products,
-  respContainerWidth = 996;
+let categoriesData;
 // getData().then((value) => {
 //   products = value.configuration.eCommerceData.products;
 //   console.log(value.configuration.eCommerceData);
 // });
 
-// =====================================
-// ==END DOCUMENT ONREADY==
-// =====================================
+const modCategoryTitle = (el, val) => {
+  setCategoriesData(val);
+  return getCatTitleHTML(el);
+  // getCatTitleHTML(el);
+};
 
-const createCatContainer = (el, products, cart) => {
-  const items = el.querySelectorAll(".ProductListElementFilter");
+const createCatContainer = (el, items, products, cart) => {
   const categoryItemContainer = document.createElement("ul");
   categoryItemContainer.classList.add("ProductListContainer");
   for (const item of items) {
@@ -97,11 +85,6 @@ const updateCatContainerWithCart = (cart, first) => {
       updateBtnsData(item, null, null, first);
     }
   }
-};
-
-const modCategoryTitle = (el, val) => {
-  setCategoriesData(val);
-  el.outerHTML = getCatTitleHTML(el);
 };
 
 const setCategoriesData = (data) => {

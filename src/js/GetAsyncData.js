@@ -1,3 +1,7 @@
+export async function getCartData() {
+  return napi.cart().read();
+}
+
 export async function getPLPData() {
   let resp = await fetch(
     "https://www.nespresso.com/br/en/order/capsules/original"

@@ -11,16 +11,15 @@ const setButtonCollapsed = (el) => {
 const getOriginalBtnData = (ele, product, added) => {
   //console.log(product);
   //  for (let btn of btns) {
-  //let article = btn,
   let increment = product.unitQuantity > 1 ? 1 : 10;
   //if (article) {
   const disabled = !product.available,
     btn_container = ele.querySelector(".AddToBagButton__container"),
-    //new_btn = document.createElement("div"),
+    new_btn = document.createElement("div"),
     hiddenText =
       ele.querySelector(".VisuallyHidden").textContent ||
       ele.querySelector(".VisuallyHidden").innerText;
-  //new_btn.classList.add("AddToBagButton");
+  new_btn.classList.add("AddToBagButton");
   let quantity = 0;
   //if (disabled) new_btn.setAttribute("disabled", "");
   const new_btn_content = addStepperBtnElements(
@@ -31,13 +30,13 @@ const getOriginalBtnData = (ele, product, added) => {
     disabled,
     smallScreen
   );
-  //new_btn.innerHTML = new_btn_content;
-  //btn_container.firstChild.appendChild(new_btn);
+  new_btn.innerHTML = new_btn_content;
+  btn_container.firstChild.appendChild(new_btn);
   //setButtonCollapsed(new_btn);
-  btn_container.firstChild.innerHTML = new_btn_content;
+  //  btn_container.firstChild.innerHTML = new_btn_content;
 
   //move to lastchild
-  //article.appendChild(btn_container);
+  ele.appendChild(btn_container);
 
   //add click event
   btn_container.addEventListener(
@@ -109,9 +108,6 @@ const addStepperBtnElements = (
   smallScreen
 ) => {
   return `
-    <div class="AddToBagButton ${
-      smallScreen ? "AddToBagButton--collapsed" : ""
-    } " ${disabled ? "disabled" : ""}>
       <span class="VisuallyHidden">${hiddenTxt}</span>
       <div class="AddToBagButton__stepper ${!added ? "empty" : "incart"}">
       <button class="AddToBagButton__decrease" value="decrease"><span>-</span></button>
@@ -123,7 +119,6 @@ const addStepperBtnElements = (
       <button class="AddToBagButton__empty" value="empty">${
         !disabled ? "BUY" : "OUT OF STOCK"
       }</button>
-    </div>
     `;
 };
 

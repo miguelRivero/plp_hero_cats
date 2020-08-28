@@ -19,6 +19,15 @@ var config = {
     path: __dirname + "/dist", // `/dist` is the destination
     filename: "[name].min.js", // bundle created by webpack it will contain all our app logic. we will link to this .js file from our html page.
   },
+  devServer: {
+    https: true,
+    //contentBase: path.join(__dirname, "public"),
+    compress: true,
+    port: 8080,
+    disableHostCheck: true,
+    open: false,
+    headers: { "Access-Control-Allow-Origin": "*" },
+  },
   module: {
     rules: [
       {
