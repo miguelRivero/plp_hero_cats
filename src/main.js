@@ -521,7 +521,7 @@ document.onreadystatechange = function () {
       try {
         const value = await getPLPData();
         const cart = await getCartData();
-        document.getElementById("main").classList.add("PhaseTwoReady");
+        document.getElementById("main").classList.add("GridListViewReady");
         let products = value.configuration.eCommerceData.products,
           firstPageLoad;
         for (let cat of product_list_groups) {

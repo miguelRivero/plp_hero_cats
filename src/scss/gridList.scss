@@ -1,5 +1,5 @@
 @import "common";
-.PhaseTwoReady {
+.GridListViewReady {
   // LAYOUT CHANGES FOR FULL WIDTH
   // .ResponsiveContainer {
   //   max-width: none;
@@ -160,6 +160,12 @@
         margin: 0;
         @include truncate(0.875rem, 1.15, 3);
       }
+
+      .ProductListElement__details {
+        .ProductListElement__price {
+          display: none;
+        }
+      }
       &.list {
         width: 100%;
         margin-bottom: 16px;
@@ -283,6 +289,9 @@
   .ProductListElement {
     border-top: 0;
     background-color: #f6f4f2;
+    & > .ProductListElement__content {
+      display: none;
+    }
   }
 
   .ProductListElement__intensity {
