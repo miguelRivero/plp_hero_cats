@@ -36,8 +36,10 @@ const createCatContainer = (el, items, products, cart) => {
       descriptionEl = item.querySelector(".ProductListElement__headline"),
       intensityEl = item.querySelector(".ProductListElement__intensity"),
       progress = createIntensityEl(product.intensity),
-      priceEl = item.querySelector(".ProductListElement__price"),
-      price = priceEl.textContent || priceEl.innerText,
+      priceElClone = item
+        .querySelector(".ProductListElement__price")
+        .cloneNode(true),
+      price = priceElClone.textContent || priceElClone.innerText,
       detailsEl = document.createElement("div"),
       li = document.createElement("li");
     //grid or list style
@@ -47,18 +49,23 @@ const createCatContainer = (el, items, products, cart) => {
     //adding progress line
     intensityEl.innerHTML = progress;
     // adding per capsule price
-    priceEl.innerHTML = price + "<span>per capsule</span>";
+    priceElClone.innerHTML = price + "<span>per capsule</span>";
     //moving price after intensity
-    intensityEl.parentNode.insertBefore(priceEl, intensityEl.nextSibling);
+    intensityEl.parentNode.insertBefore(priceElClone, intensityEl.nextSibling);
     //moving element to details container
     detailsEl.classList.add("ProductListElement__details");
     detailsEl.appendChild(prodEl.querySelector(".ProductListElement__name"));
-    detailsEl.appendChild(prodEl.querySelector(".ProductListElement__content"));
+    const contentElClone = prodEl
+      .querySelector(".ProductListElement__content")
+      .cloneNode(true);
+    detailsEl.appendChild(contentElClone);
     detailsEl.appendChild(intensityEl);
-    detailsEl.appendChild(priceEl);
+
+    detailsEl.appendChild(priceElClone);
     prodEl.appendChild(detailsEl);
     //adding Add to Cart btn
     const add_btn = getOriginalBtnData(prodEl, product, added);
+    //move to lastchild
     prodEl.appendChild(add_btn);
     // add class if is in basket
     if (added) prodEl.classList.add("ProductInBasket");
