@@ -4,35 +4,29 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-// const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-//   .BundleAnalyzerPlugin;
-//const isDevelopment = process.env.NODE_ENV === "development";
-const bundle = false;
-const splitConfig = {
-  chunks: "all",
-  minSize: 15000,
-  maxSize: 19480,
-  cacheGroups: {
-    // Merge all the CSS into one file
-    styles: {
-      name: "styles",
-      test: /\.s?css$/,
-      chunks: "all",
-      minChunks: 1,
-      reuseExistingChunk: true,
-      enforce: true,
-    },
-  },
-};
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
+const isDevelopment = process.env.NODE_ENV === "development";
+const bundle = true;
 
 var config = {
   context: __dirname + "/src", // `__dirname` is root of project and `/src` is source
   entry: {
     app: ["./main.js"],
+    //style: ["./scss/slider.scss"],
   },
   output: {
     path: __dirname + "/dist", // `/dist` is the destination
     filename: "[name].min.js", // bundle created by webpack it will contain all our app logic. we will link to this .js file from our html page.
+  },
+  devServer: {
+    https: true,
+    //contentBase: path.join(__dirname, "public"),
+    compress: true,
+    port: 8080,
+    disableHostCheck: true,
+    open: false,
+    headers: { "Access-Control-Allow-Origin": "*" },
   },
   module: {
     rules: [
@@ -57,7 +51,9 @@ var config = {
         test: /\.s(a|c)ss$/,
         exclude: /\.module.(s(a|c)ss)$/,
         use: [
-          bundle ? "style-loader" : MiniCssExtractPlugin.loader,
+          isDevelopment || bundle
+            ? "style-loader"
+            : MiniCssExtractPlugin.loader,
           {
             loader: "css-loader", // translates CSS into CommonJS
             options: {
@@ -68,7 +64,7 @@ var config = {
           {
             loader: "sass-loader",
             options: {
-              sourceMap: false,
+              sourceMap: isDevelopment,
             },
           },
         ],
@@ -115,16 +111,31 @@ var config = {
         },
       }),
     ],
-    splitChunks: !bundle ? splitConfig : {},
   },
 };
 
 if (!bundle) {
   config.plugins.push(
     new MiniCssExtractPlugin({
-      filename: "[name].css",
-      chunkFilename: "[id].css",
+      filename: isDevelopment ? "[name].css" : "[name].[hash].css",
+      chunkFilename: isDevelopment ? "[id].css" : "[id].[hash].css",
     })
   );
+  config.optimization.splitChunks = {
+    chunks: "all",
+    minSize: 15000,
+    maxSize: 19480,
+    cacheGroups: {
+      // Merge all the CSS into one file
+      styles: {
+        name: "styles",
+        test: /\.s?css$/,
+        chunks: "all",
+        minChunks: 1,
+        reuseExistingChunk: true,
+        enforce: true,
+      },
+    },
+  };
 }
 module.exports = config;
