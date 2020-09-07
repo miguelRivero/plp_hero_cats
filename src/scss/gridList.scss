@@ -131,15 +131,25 @@
 
       .limited_edition__text,
       .ch_fairtrade-icon,
-      .ch_prodLabel,
       .ProductListElement__cup-size {
         display: none;
       }
       .ProductListElement__image {
         width: auto;
         display: block;
-        position: relative;
-        // text-align: center;
+
+        .ch_prodLabel {
+          top: 8px;
+          background-color: #e3e3e3;
+          font-size: 8px;
+          font-family: "NespressoLucas-bold", Helvetica, Arial, sans-serif !important;
+          letter-spacing: 0.8px;
+          line-height: 16px;
+          z-index: 8;
+          &:after {
+            border: none;
+          }
+        }
       }
 
       .ProductListElement__headline {
@@ -163,9 +173,7 @@
           height: unset;
           justify-content: space-between;
         }
-        .ProductListElement__image {
-          //width: 12%;
-        }
+
         .ProductListElement__details {
           padding-left: 16px;
           //width: 66%;
@@ -209,9 +217,6 @@
         .ProductListElement__name,
         .ProductListElement__price {
           margin-left: 0;
-        }
-        .ProductListElement__add-to-basket {
-          //width: 22%;
         }
       }
 
@@ -278,9 +283,6 @@
   .ProductListElement {
     border-top: 0;
     background-color: #f6f4f2;
-    &.ProductInBasket {
-      background-color: white;
-    }
   }
 
   .ProductListElement__intensity {
@@ -402,6 +404,9 @@
           }
           .ProductListElement__image {
             width: 12%;
+            .ch_prodLabel {
+              top: 16px;
+            }
           }
           .ProductListElement__details {
             width: 66%;

@@ -54,7 +54,7 @@ const isSmallScreen = () => {
   return (window.innerWidth || document.documentElement.clientWidth) < 786;
 };
 
-const setSmallScreen = () => {
+const setIsSmallScreen = () => {
   smallScreen = isSmallScreen();
   if (smallScreen) {
     document.getElementById("main").classList.add("Main--smallScreen");
@@ -92,7 +92,7 @@ document.onreadystatechange = function () {
       });
 
     //Set viewport width screen class
-    setSmallScreen();
+    setIsSmallScreen();
     //Adding the Slider to the DOM
     const slider = document.createElement("div");
     slider.classList.add("ProductListCategories");
@@ -535,7 +535,6 @@ document.onreadystatechange = function () {
           //Look for created grid/list content and append content
           const items = cat.querySelectorAll(".ProductListElementFilter");
           const catContainer = createCatContainer(cat, items, products, cart);
-          console.log(catContainer);
           cat
             .querySelector(".ProductListGroup__content")
             .appendChild(catContainer);
@@ -570,12 +569,8 @@ document.onreadystatechange = function () {
     // ==================================================
 
     window.onresize = function (event) {
-      setSmallScreen();
+      setIsSmallScreen();
       updateGlider(sliderLayoutEvent);
-      // resizeOverflowedBackground(
-      //   document.querySelectorAll(".ProductListGroup__background--overflowed"),
-      //   document.documentElement.clientWidth
-      // );
     };
   }
 };

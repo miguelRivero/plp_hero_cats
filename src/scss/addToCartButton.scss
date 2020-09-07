@@ -44,9 +44,6 @@ input:invalid {
     }
   }
 
-  .grid {
-  }
-
   .Main--smallScreen {
     .list {
       .AddToBagButton__stepper {
@@ -76,8 +73,7 @@ input:invalid {
       }
     }
   }
-  .ProductInBasket {
-  }
+
   .AddToBagButton__stepper {
     display: inline-block;
     position: relative;
@@ -104,10 +100,10 @@ input:invalid {
       white-space: nowrap;
       border: none;
       border-radius: 24px;
-      background: #2e8561;
+      background: #3d8705;
       transition: background 0.3s ease;
       &:hover {
-        background: #215e45;
+        background: #337204;
       }
     }
     &.incart,
@@ -164,10 +160,10 @@ input:invalid {
   .AddToBagButton__decrease,
   .AddToBagButton__increase {
     border-radius: 50%;
-    background: #2e8561;
+    background: #3d8705;
     border: none;
     &:hover {
-      background: #215e45;
+      background: #337204;
     }
     span {
       position: absolute;
