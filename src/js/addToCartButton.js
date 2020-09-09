@@ -9,7 +9,6 @@ const setButtonCollapsed = (el) => {
 };
 
 const getOriginalBtnData = (ele, product, added) => {
-  //console.log(product);
   //  for (let btn of btns) {
   let increment = product.unitQuantity > 1 ? 1 : 10;
   //if (article) {
@@ -45,7 +44,7 @@ const getOriginalBtnData = (ele, product, added) => {
     "click",
     function (event) {
       stepperInput(event, product.internationalId, increment, disabled);
-      ele.closest("li").classList.add("ProcutListItem--cartActive");
+      ele.closest("li").classList.add("ProductListItem--cartActive");
     },
     false
   );
@@ -54,16 +53,18 @@ const getOriginalBtnData = (ele, product, added) => {
   // }
 };
 
-const updateBtnsData = (article, article_id, cart, first) => {
+const updateBtnsDataFromCart = (article, article_id, cart, first) => {
   if (cart && cart.length) {
     for (const item of cart) {
       let updated_q;
       if (article_id === item.productId.split("/").pop()) {
         updated_q = item.quantity;
+        console.log(article_id + " =>" + updated_q);
       } else {
         //For removed items
         updated_q = 0;
       }
+
       updateBtnValues(article, updated_q, first);
     }
   } else {
@@ -72,31 +73,25 @@ const updateBtnsData = (article, article_id, cart, first) => {
 };
 
 const updateBtnValues = (prod, number, reload) => {
-  console.log("updateBtnValues");
-
   //reload is for styling as 1 button (without input visible)
   prod.querySelector(".AddToBagButton__input").setAttribute("value", number);
   prod.querySelector(".AddToBagButton__incart").innerHTML = number;
-  console.log("updateBtnValues,  reload = ", reload);
   const sel = prod.querySelector(".AddToBagButton__stepper");
   //set style when page loads
+  //  le esta llegando zero cuando no es asi
   if (reload || number === 0) {
     singleButtonStyle(sel, number);
   }
 };
 
 const singleButtonStyle = (el, num) => {
-  console.log("singleButtonStyle");
-  console.log(el, num);
-  if (num === 0) {
-    console.log("0 = incart -> empty");
-    el.classList.remove("incart");
-    el.classList.add("empty");
-  } else {
-    console.log("!0 = empty -> incart");
+  if (num) {
     el.classList.remove("empty");
     el.classList.add("incart");
-    console.log("_______________");
+  } else {
+    console.log(el, num);
+    el.classList.remove("incart");
+    el.classList.add("empty");
   }
 };
 
@@ -139,45 +134,68 @@ const stepperInput = (event, prod_id, inc, disable) => {
     val = parseInt(input.value),
     new_value = val,
     surplus = val % inc;
-  console.log("stepperInput");
-  switch (btn_value) {
-    case "empty":
-      stepper.classList.remove("empty");
-      new_value = inc;
-      break;
-    case "incart":
-      stepper.classList.remove("incart");
-      //      new_value += inc;
-      break;
-    case "decrease":
-      new_value = surplus ? val - surplus : val >= inc ? val - inc : min;
-      console.log(new_value);
-      break;
-    case "increase":
-      new_value =
-        surplus && val < max
-          ? val + (inc - surplus)
-          : val < max - inc
-          ? val + inc
-          : (new_value = max);
-      console.log(new_value);
-      break;
-    default:
-      break;
-  }
 
-  addToCart(prod_id, new_value);
-  updateBtnValues(btn, new_value, false);
+  if (smallScreen) {
+    switch (btn_value) {
+      // case "empty":
+      //   stepper.classList.remove("empty");
+      //   new_value = inc;
+      //   break;
+      case "incart":
+        stepper.classList.remove("incart");
+        //      new_value += inc;
+        break;
+      case "decrease":
+        new_value = surplus ? val - surplus : val >= inc ? val - inc : min;
+        break;
+      case "increase":
+        stepper.classList.remove("empty");
+
+        new_value =
+          surplus && val < max
+            ? val + (inc - surplus)
+            : val < max - inc
+            ? val + inc
+            : (new_value = max);
+        break;
+      default:
+        break;
+    }
+  } else {
+    switch (btn_value) {
+      case "empty":
+        stepper.classList.remove("empty");
+        new_value = inc;
+        break;
+      case "incart":
+        stepper.classList.remove("incart");
+        //      new_value += inc;
+        break;
+      case "decrease":
+        new_value = surplus ? val - surplus : val >= inc ? val - inc : min;
+        break;
+      case "increase":
+        new_value =
+          surplus && val < max
+            ? val + (inc - surplus)
+            : val < max - inc
+            ? val + inc
+            : (new_value = max);
+        break;
+      default:
+        break;
+    }
+  }
+  console.log(new_value);
+  setTimeout(addToCart(prod_id, new_value), 1000);
 };
 
 const addToCart = (id, val) => {
   window.CartManager.updateItem(id, val)
-    .then(() => {
-      //eventHub.$emit("cart.update2", id);
-    })
+    .then(() => {})
     .catch(() => {
       console.log("Error adding item to cart");
     });
 };
 
-export { getOriginalBtnData, updateBtnsData };
+export { getOriginalBtnData, updateBtnsDataFromCart };

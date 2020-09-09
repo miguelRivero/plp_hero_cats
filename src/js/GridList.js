@@ -1,5 +1,4 @@
-import { getOriginalBtnData, updateBtnsData } from "./AddToCartButton";
-
+import { getOriginalBtnData, updateBtnsDataFromCart } from "./AddToCartButton";
 // const getData = async () => {
 //   let jsonData = await getPLPData();
 //   return jsonData;
@@ -55,6 +54,7 @@ const createCatContainer = (el, items, products, cart) => {
     //moving element to details container
     detailsEl.classList.add("ProductListElement__details");
     detailsEl.appendChild(prodEl.querySelector(".ProductListElement__name"));
+
     const contentElClone = prodEl
       .querySelector(".ProductListElement__content")
       .cloneNode(true);
@@ -85,11 +85,14 @@ const updateCatContainerWithCart = (cart, first) => {
       if (added) {
         item.classList.add("ProductInBasket");
       } else {
+        item.closest("li").classList.remove("ProductListItem--cartActive");
         item.classList.remove("ProductInBasket");
       }
-      updateBtnsData(item, itemId, cart, first);
+      //console.log(itemId + " ===>");
+      updateBtnsDataFromCart(item, itemId, cart, first);
     } else {
-      updateBtnsData(item, null, null, first);
+      item.closest("li").classList.remove("ProductListItem--cartActive");
+      updateBtnsDataFromCart(item, null, null, first);
     }
   }
 };

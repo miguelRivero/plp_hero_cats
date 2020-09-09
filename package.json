@@ -41,6 +41,7 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
+    "ellipsed": "^1.5.0",
     "glider-js": "https://github.com/miguelRivero/Glider.js.git",
     "raf-throttle": "^2.0.3",
     "vanilla-js-dropdown": "^2.2.0"

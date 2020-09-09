@@ -18,6 +18,7 @@ input:invalid {
 }
 
 .GridListViewReady {
+  @import "common";
   .ProductListElement__add-to-basket {
     float: none;
     display: block;
@@ -40,36 +41,6 @@ input:invalid {
         background-color: #e3e3e3;
         color: #707070;
         pointer-events: none;
-      }
-    }
-  }
-
-  .Main--smallScreen {
-    .list {
-      .AddToBagButton__stepper {
-        &.incart,
-        &.empty {
-          width: 40px;
-          .AddToBagButton__incart,
-          .AddToBagButton__decrease,
-          .AddToBagButton__increase {
-            width: 40px;
-            border-radius: 100%;
-            left: 0;
-          }
-          .AddToBagButton__decrease,
-          .AddToBagButton__increase {
-            left: 0;
-          }
-
-          .AddToBagButton__empty {
-            display: none;
-          }
-          .AddToBagButton__input {
-            width: 0;
-            opacity: 0;
-          }
-        }
       }
     }
   }
@@ -100,10 +71,10 @@ input:invalid {
       white-space: nowrap;
       border: none;
       border-radius: 24px;
-      background: #3d8705;
-      transition: background 0.3s ease;
+      background-color: #3d8705;
+      transition: background-color 0.3s ease;
       &:hover {
-        background: #337204;
+        background-color: #337204;
       }
     }
     &.incart,
@@ -151,7 +122,7 @@ input:invalid {
     letter-spacing: 1.5px;
     line-height: 1rem;
     text-align: center;
-    transition: width 0.7s ease-out;
+    transition: width 0.3s ease;
     &:focus,
     &:active {
       border-color: #dbdbdb;
@@ -193,5 +164,34 @@ input:invalid {
     // &:hover {
     //   background-size: calc(50% - 1px) calc(50% - 1px);
     // }
+  }
+  @media (min-width: $breakpoint-tablet) {
+    .ProductListContainer {
+      li.list {
+        .AddToBagButton__stepper {
+          &.incart,
+          &.empty {
+            width: auto;
+            .AddToBagButton__input {
+              width: 126px;
+              opacity: 1;
+            }
+            .AddToBagButton__incart {
+              width: 100%;
+            }
+          }
+          &.empty {
+            .AddToBagButton__empty {
+              display: block;
+            }
+          }
+          &.incart {
+            .AddToBagButton__incart {
+              border-radius: 24px;
+            }
+          }
+        }
+      }
+    }
   }
 }

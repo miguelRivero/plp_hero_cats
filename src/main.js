@@ -20,6 +20,7 @@ import "./scss/slider.scss";
 import "./scss/gridList.scss";
 import "./scss/addToCartButton.scss";
 import throttle from "raf-throttle";
+import { ellipsis } from "ellipsed";
 import { setSelectValues, createTechnologiesDropdown } from "./js/Select.js";
 import { getCategories } from "./js/CategoriesData";
 import {
@@ -531,7 +532,7 @@ document.onreadystatechange = function () {
           // Mod to the category title
           const title = cat.querySelector(".ProductListGroup__title");
           title.outerHTML = modCategoryTitle(title, value);
-          //          console.log(modCategoryTitle(title, value));
+
           //Look for created grid/list content and append content
           const items = cat.querySelectorAll(".ProductListElementFilter");
           const catContainer = createCatContainer(cat, items, products, cart);
@@ -539,7 +540,7 @@ document.onreadystatechange = function () {
             .querySelector(".ProductListGroup__content")
             .appendChild(catContainer);
 
-          //Append backgroud, category title and gris/list content
+          //Append background, category title and gris/list content
           productGridContainer.appendChild(
             cat.querySelector(".ProductListGroup__background--overflowed")
           );
@@ -550,10 +551,11 @@ document.onreadystatechange = function () {
           //Append transformed markup to category
           cat.appendChild(productGridContainer);
         }
+
         //update from cart
         window.napi.data().on("cart.update", async function (event) {
           console.log("EVENT cart.update");
-          const cart = await getBasketData();
+          const cart = await getCartData();
           updateCatContainerWithCart(cart, firstPageLoad);
           firstPageLoad = false;
         });
@@ -563,6 +565,10 @@ document.onreadystatechange = function () {
     };
 
     runGridListTest();
+    ellipsis(".ProductListElement__headline", 2, { responsive: true });
+    ellipsis(".ProductListElement__details .ProductListElement__name a", 1, {
+      responsive: true,
+    });
 
     // // ==================================================
     // == END GRID / LIST LAYOUT ========================
@@ -574,7 +580,9 @@ document.onreadystatechange = function () {
     };
   }
 };
-
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 // =====================================
 // ==END DOCUMENT ONREADY==
 // =====================================
