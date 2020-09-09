@@ -1,5 +1,9 @@
-.ProductListContainer {
-  li.grid {
+.ProductListContainer.grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: calc(100% - 2rem);
+  li {
     width: 50%;
     max-width: 246px;
 

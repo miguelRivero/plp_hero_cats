@@ -1,5 +1,6 @@
-.ProductListContainer {
-  li.list {
+.ProductListContainer.list {
+  display: inline-table;
+  li {
     width: 100%;
     margin-bottom: 16px;
     border-top: 1px solid #e3e3e3;
@@ -119,8 +120,8 @@
 // }
 
 @media (min-width: $breakpoint-tablet) {
-  .ProductListContainer {
-    li.list {
+  .ProductListContainer.list {
+    li {
       margin-bottom: 0;
       border-bottom: none;
       &:last-child {

@@ -166,8 +166,8 @@ input:invalid {
     // }
   }
   @media (min-width: $breakpoint-tablet) {
-    .ProductListContainer {
-      li.list {
+    .ProductListContainer.list {
+      li {
         .AddToBagButton__stepper {
           &.incart,
           &.empty {

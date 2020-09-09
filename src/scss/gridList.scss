@@ -78,10 +78,6 @@
   }
 
   .ProductListContainer {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: calc(100% - 2rem);
     transform: translateY(-100px);
     background: white;
     margin: 0 1rem;
