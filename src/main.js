@@ -36,6 +36,7 @@ import {
   modCategoryTitle,
   createCatContainer,
   updateCatContainerWithCart,
+  checkProductIntoView,
   // resizeOverflowedBackground,
 } from "./js/GridList";
 //import { updateBtnsData } from "./js/AddToCartButton";
@@ -378,6 +379,7 @@ document.onreadystatechange = function () {
     const scrollListener = () => {
       toggleStickySlider();
       checkSectionsAreIntoView();
+      checkProductIntoView();
     };
 
     const getSafetyOffset = () => {
@@ -400,7 +402,7 @@ document.onreadystatechange = function () {
         }
       }
       cur = cur[cur.length - 1];
-      var id = cur && cur.length ? cur[0].id : "";
+      let id = cur && cur.length ? cur[0].id : null;
       setBtnActive(id);
     };
 
@@ -408,7 +410,7 @@ document.onreadystatechange = function () {
       btns.forEach((btn, i) => {
         btn.classList.remove("custom-active");
         const link = btn.getAttribute("data-link");
-        if (id === link) {
+        if (id && id === link) {
           btn.classList.add("custom-active");
           glider.scrollItem(i > 0 ? i - 1 : 0);
           updateURL(link);
@@ -556,7 +558,7 @@ document.onreadystatechange = function () {
         window.napi.data().on("cart.update", async function (event) {
           console.log("EVENT cart.update");
           const cart = await getCartData();
-          updateCatContainerWithCart(cart, firstPageLoad);
+          updateCatContainerWithCart(cart);
           firstPageLoad = false;
         });
       } catch (error) {
@@ -580,9 +582,7 @@ document.onreadystatechange = function () {
     };
   }
 };
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+
 // =====================================
 // ==END DOCUMENT ONREADY==
 // =====================================

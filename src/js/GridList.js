@@ -1,9 +1,10 @@
-import { getOriginalBtnData, updateBtnsDataFromCart } from "./AddToCartButton";
+import { getOriginalBtnData, updateBtnValues } from "./AddToCartButton";
 // const getData = async () => {
 //   let jsonData = await getPLPData();
 //   return jsonData;
 // };
 const displayStyle = "list",
+  allProducts = document.querySelectorAll(".ProductListElement"),
   dummyText =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
 let categoriesData;
@@ -19,19 +20,20 @@ const modCategoryTitle = (el, val) => {
 };
 
 const createCatContainer = (el, items, products, cart) => {
-  const categoryItemContainer = document.createElement("ul");
-  categoryItemContainer.classList.add("ProductListContainer");
+  const categoryItemContainer = document.createElement("ul"),
+    display =
+      displayStyle === "list"
+        ? "list"
+        : product.unitQuantity > 1
+        ? "list"
+        : "grid";
+  //grid or list style
+  categoryItemContainer.classList.add("ProductListContainer", display);
   for (const item of items) {
     const prodEl = item.querySelector(".ProductListElement"),
       prodId = prodEl.getAttribute("data-product-item-id"),
       product = getProductBy("internationalId", prodId, products),
       added = itemsInBasket(product.internationalId, cart),
-      display =
-        displayStyle === "list"
-          ? "list"
-          : product.unitQuantity > 1
-          ? "list"
-          : "grid",
       descriptionEl = item.querySelector(".ProductListElement__headline"),
       intensityEl = item.querySelector(".ProductListElement__intensity"),
       progress = createIntensityEl(product.intensity),
@@ -41,8 +43,6 @@ const createCatContainer = (el, items, products, cart) => {
       price = priceElClone.textContent || priceElClone.innerText,
       detailsEl = document.createElement("div"),
       li = document.createElement("li");
-    //grid or list style
-    li.classList.add(display);
     //transform description case
     descriptionEl.innerHTML = capitalize(product.headline);
     //adding progress line
@@ -76,23 +76,23 @@ const createCatContainer = (el, items, products, cart) => {
   return categoryItemContainer;
 };
 
-const updateCatContainerWithCart = (cart, first) => {
-  const items = document.querySelectorAll(".ProductListElement");
-  for (const item of items) {
+const updateCatContainerWithCart = (cart) => {
+  for (const item of allProducts) {
     if (cart.length) {
       const itemId = item.getAttribute("data-product-item-id"),
         added = itemsInBasket(itemId, cart);
+      //added is a number (0 = false)
       if (added) {
         item.classList.add("ProductInBasket");
       } else {
-        item.closest("li").classList.remove("ProductListItem--cartActive");
+        //item.closest("li").classList.remove("ProductListItem--cartActive");
         item.classList.remove("ProductInBasket");
       }
+      updateBtnValues(item, added);
       //console.log(itemId + " ===>");
-      updateBtnsDataFromCart(item, itemId, cart, first);
     } else {
-      item.closest("li").classList.remove("ProductListItem--cartActive");
-      updateBtnsDataFromCart(item, null, null, first);
+      //item.closest("li").classList.remove("ProductListItem--cartActive");
+      updateBtnValues(item, 0);
     }
   }
 };
@@ -172,9 +172,30 @@ const itemsInBasket = (code, added) => {
     return 0;
   }
 };
+
+const checkProductIntoView = () => {
+  for (const prod of allProducts) {
+    let visible = isScrolledIntoView(prod);
+    if (!visible & prod.classList.contains("ProductInBasket")) {
+      prod.querySelector(".AddToBagButton__stepper").classList.add("incart");
+    }
+  }
+};
+
+const isScrolledIntoView = (el) => {
+  var rect = el.getBoundingClientRect();
+  var elemTop = rect.top;
+  var elemBottom = rect.bottom;
+  // Only completely visible elements return true:
+  var isVisible = elemTop >= 0 && elemBottom <= window.innerHeight;
+  // Partially visible elements return true:
+  return isVisible;
+};
+
 export {
   setCategoriesData,
   modCategoryTitle,
   createCatContainer,
   updateCatContainerWithCart,
+  checkProductIntoView,
 };
