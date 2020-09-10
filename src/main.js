@@ -32,7 +32,7 @@ import {
   sliderArrowsNeeded,
 } from "./js/HorizontalScroll";
 import {
-  //setCategoriesData,
+  displayStyle,
   modCategoryTitle,
   createCatContainer,
   updateCatContainerWithCart,
@@ -525,8 +525,7 @@ document.onreadystatechange = function () {
         const value = await getPLPData();
         const cart = await getCartData();
         document.getElementById("main").classList.add("GridListViewReady");
-        let products = value.configuration.eCommerceData.products,
-          firstPageLoad;
+        let products = value.configuration.eCommerceData.products;
         for (let cat of product_list_groups) {
           //Create container for Category title, description and grid/list
           const productGridContainer = document.createElement("div");
@@ -554,23 +553,33 @@ document.onreadystatechange = function () {
           cat.appendChild(productGridContainer);
         }
 
+        let rows =
+          displayStyle === "grid"
+            ? { name: 2, headline: 2 }
+            : { name: 1, headline: 2 };
+
+        ellipsis(".ProductListElement__details .AccessibleLink", rows.name, {
+          responsive: true,
+        });
+        ellipsis(
+          ".ProductListElement__details .ProductListElement__headline",
+          rows.headline,
+          {
+            responsive: true,
+          }
+        );
+
         //update from cart
-        window.napi.data().on("cart.update", async function (event) {
-          console.log("EVENT cart.update");
+        window.napi.data().on("cart.update", async function () {
           const cart = await getCartData();
           updateCatContainerWithCart(cart);
-          firstPageLoad = false;
         });
       } catch (error) {
-        console.log(error);
+        //console.log(error);
       }
     };
 
     runGridListTest();
-    ellipsis(".ProductListElement__headline", 2, { responsive: true });
-    ellipsis(".ProductListElement__details .ProductListElement__name a", 1, {
-      responsive: true,
-    });
 
     // // ==================================================
     // == END GRID / LIST LAYOUT ========================

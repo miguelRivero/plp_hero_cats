@@ -9,9 +9,7 @@ const setButtonCollapsed = (el) => {
 };
 
 const getOriginalBtnData = (ele, product, added) => {
-  //  for (let btn of btns) {
   let increment = product.unitQuantity > 1 ? 1 : 10;
-  //if (article) {
   const disabled = !product.available,
     btn_container = ele
       .querySelector(".AddToBagButton__container")
@@ -26,7 +24,7 @@ const getOriginalBtnData = (ele, product, added) => {
   new_btn.classList.add("AddToBagButton");
   new_btn.setAttribute("data-focus-id", data_focus);
   //if (disabled) new_btn.setAttribute("disabled", "");
-  const new_btn_content = addStepperBtnElements(
+  new_btn.innerHTML = addStepperBtnElements(
     null,
     increment,
     added,
@@ -34,30 +32,44 @@ const getOriginalBtnData = (ele, product, added) => {
     disabled,
     smallScreen
   );
-  new_btn.innerHTML = new_btn_content;
   btn_container.firstChild.appendChild(new_btn);
-  //setButtonCollapsed(new_btn);
-  //  btn_container.firstChild.innerHTML = new_btn_content;
+  btn_container.classList.add("AddToBagButtonStepper");
 
   //add click event
   btn_container.addEventListener(
     "click",
     function (event) {
       stepperInput(event, product.internationalId, increment, disabled);
-      //ele.closest("li").classList.add("ProductListItem--cartActive");
+      ele.closest("li").classList.add("ProductListItem--cartActive");
     },
     false
   );
+
+  //add foucusout and keyup ENTER to input
+  const inputEl = btn_container.querySelector(".AddToBagButton__input");
+  inputEl.addEventListener("focusout", (event) => {
+    inputRoundQHandler(event.target, increment, product.internationalId);
+  });
+
+  inputEl.addEventListener("keyup", (event) => {
+    let key = event.keyCode || event.which;
+    if (key == 13) {
+      inputRoundQHandler(event.target, increment, product.internationalId);
+    }
+  });
+
   return btn_container;
-  //}
-  // }
 };
 
+const inputRoundQHandler = (ele, increment, id) => {
+  const value = roundQUp(ele.value, increment);
+  setInputValue(ele, value);
+  addToCart(id, value);
+};
 const updateBtnValues = (prod, number) => {
   //reload is for styling as 1 button (without input visible)
   const input = prod.querySelector(".AddToBagButton__input");
-  input.setAttribute("value", number);
-  input.value = number;
+  setInputValue(input, number);
   prod.querySelector(".AddToBagButton__incart").innerHTML = number;
   const sel = prod.querySelector(".AddToBagButton__stepper");
   //set style when page loads
@@ -72,7 +84,6 @@ const singleButtonStyle = (el, num) => {
     el.classList.remove("empty");
     el.classList.add("incart");
   } else {
-    console.log(el, num);
     el.classList.remove("incart");
     el.classList.add("empty");
   }
@@ -172,6 +183,17 @@ const stepperInput = (event, prod_id, inc, disable) => {
   addToCart(prod_id, new_value);
 };
 
+const roundQUp = (val, inc, max = 100) => {
+  val = parseInt(val);
+  const surplus = val % inc;
+  const new_value = surplus && val < max ? val + (inc - surplus) : val;
+  return new_value;
+};
+
+const setInputValue = (input, number) => {
+  input.setAttribute("value", number);
+  input.value = number;
+};
 const addToCart = (id, val) => {
   window.CartManager.updateItem(id, val)
     .then(() => {})

@@ -21,12 +21,7 @@ const modCategoryTitle = (el, val) => {
 
 const createCatContainer = (el, items, products, cart) => {
   const categoryItemContainer = document.createElement("ul"),
-    display =
-      displayStyle === "list"
-        ? "list"
-        : product.unitQuantity > 1
-        ? "list"
-        : "grid";
+    display = displayStyle;
   //grid or list style
   categoryItemContainer.classList.add("ProductListContainer", display);
   for (const item of items) {
@@ -43,6 +38,8 @@ const createCatContainer = (el, items, products, cart) => {
       price = priceElClone.textContent || priceElClone.innerText,
       detailsEl = document.createElement("div"),
       li = document.createElement("li");
+    //grid or list style
+    if (product.unitQuantity > 1) li.classList.add("list");
     //transform description case
     descriptionEl.innerHTML = capitalize(product.headline);
     //adding progress line
@@ -177,6 +174,7 @@ const checkProductIntoView = () => {
   for (const prod of allProducts) {
     let visible = isScrolledIntoView(prod);
     if (!visible & prod.classList.contains("ProductInBasket")) {
+      prod.closest("li").classList.remove("ProductListItem--cartActive");
       prod.querySelector(".AddToBagButton__stepper").classList.add("incart");
     }
   }
@@ -193,6 +191,7 @@ const isScrolledIntoView = (el) => {
 };
 
 export {
+  displayStyle,
   setCategoriesData,
   modCategoryTitle,
   createCatContainer,
