@@ -71,6 +71,7 @@
   }
   .ProductListElement__details {
     .ProductListElement__content {
+      .AddToBagButton__container,
       .ProductListElement__price {
         display: none;
       }
@@ -82,9 +83,7 @@
     background: white;
     margin: 0 1rem;
     li {
-      border: 1px solid #e3e3e3;
-      border-top: 0;
-      background-color: #f6f4f2;
+      background-color: white;
 
       .limited_edition__text,
       .ch_fairtrade-icon,
@@ -97,6 +96,7 @@
 
         .ch_prodLabel {
           top: 8px;
+          left: -1px;
           background-color: #e3e3e3;
           font-size: 8px;
           font-family: "NespressoLucas-bold", Helvetica, Arial, sans-serif !important;
@@ -124,8 +124,12 @@
   }
 
   .ProductListElement {
+    border: 1px solid #e6e6e6;
     border-top: 0;
-    background-color: #f6f4f2;
+    background-color: white;
+    &:hover {
+      background-color: #f9f9f9;
+    }
     & > .ProductListElement__name,
     & > .ProductListElement__content,
     & > .ProductListElement__price {
@@ -213,13 +217,14 @@
       text-align: left;
       padding-top: 0;
       padding-left: 0;
+      padding-right: 29px;
       width: 25%;
     }
 
     .ProductListContainer {
       transform: none;
       width: 75%;
-      margin: 0 0 0 29px;
+      margin: 0;
     }
   }
 }
