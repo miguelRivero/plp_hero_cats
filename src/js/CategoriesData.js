@@ -38,6 +38,7 @@ const getCategories = (product_list_groups, imagesStorage) => {
         label: title,
         labelAsArray: titleAsArray,
         image: imagesStorage + text_id + ".jpg",
+        background: imagesStorage + text_id + "_bg.jpg",
         id: id,
       });
     });
