@@ -11,6 +11,7 @@ const setButtonCollapsed = (el) => {
 const getOriginalBtnData = (ele, product, added) => {
   let increment = product.unitQuantity > 1 ? 1 : 10;
   const disabled = !product.available,
+    maxOrderQuantity = product.maxOrderQuantity,
     btn_container = ele
       .querySelector(".AddToBagButton__container")
       .cloneNode(true),
@@ -39,7 +40,13 @@ const getOriginalBtnData = (ele, product, added) => {
   btn_container.addEventListener(
     "click",
     function (event) {
-      stepperInput(event, product.internationalId, increment, disabled);
+      stepperClickHandler(
+        event,
+        product.internationalId,
+        increment,
+        maxOrderQuantity,
+        disabled
+      );
       ele.closest("li").classList.add("ProductListItem--cartActive");
     },
     false
@@ -48,21 +55,41 @@ const getOriginalBtnData = (ele, product, added) => {
   //add foucusout and keyup ENTER to input
   const inputEl = btn_container.querySelector(".AddToBagButton__input");
   inputEl.addEventListener("focusout", (event) => {
-    inputRoundQHandler(event.target, increment, product.internationalId);
+    //check if focusout is not triggered by stepper buttons
+    let classes = event.relatedTarget ? event.relatedTarget.classList : null;
+    if (
+      classes &&
+      (classes.contains("AddToBagButton__increase") ||
+        classes.contains("AddToBagButton__decrease"))
+    ) {
+      return;
+    } else {
+      inputRoundQHandler(
+        event.target,
+        increment,
+        maxOrderQuantity,
+        product.internationalId
+      );
+    }
   });
 
   inputEl.addEventListener("keyup", (event) => {
     let key = event.keyCode || event.which;
     if (key == 13) {
-      inputRoundQHandler(event.target, increment, product.internationalId);
+      inputRoundQHandler(
+        event.target,
+        increment,
+        maxOrderQuantity,
+        product.internationalId
+      );
     }
   });
 
   return btn_container;
 };
 
-const inputRoundQHandler = (ele, increment, id) => {
-  const value = roundQUp(ele.value, increment);
+const inputRoundQHandler = (ele, increment, max, id) => {
+  const value = roundQUp(ele.value, increment, max);
   setInputValue(ele, value);
   addToCart(id, value);
 };
@@ -86,6 +113,7 @@ const singleButtonStyle = (el, num) => {
   } else {
     el.classList.remove("incart");
     el.classList.add("empty");
+    // el.closest("li").classList.remove("ProductListItem--cartActive");
   }
 };
 
@@ -112,7 +140,7 @@ const addStepperBtnElements = (
     `;
 };
 
-const stepperInput = (event, prod_id, inc, disable) => {
+const stepperClickHandler = (event, prod_id, inc, max, disable) => {
   event.stopPropagation();
   if (disable) return false;
 
@@ -120,7 +148,6 @@ const stepperInput = (event, prod_id, inc, disable) => {
     ? event.target.value
     : event.target.parentNode.value;
   let min = 0,
-    max = 100,
     //btn = document.getElementById(id),
     btn = document.querySelector("[data-product-item-id='" + prod_id + "']"),
     stepper = btn.querySelector(".AddToBagButton__stepper"),
@@ -129,64 +156,48 @@ const stepperInput = (event, prod_id, inc, disable) => {
     new_value = val,
     surplus = val % inc;
 
-  if (smallScreen) {
-    switch (btn_value) {
-      // case "empty":
-      //   stepper.classList.remove("empty");
-      //   new_value = inc;
-      //   break;
-      case "incart":
-        stepper.classList.remove("incart");
-        //      new_value += inc;
-        break;
-      case "decrease":
-        new_value = surplus ? val - surplus : val >= inc ? val - inc : min;
-        break;
-      case "increase":
-        stepper.classList.remove("empty");
-
-        new_value =
-          surplus && val < max
-            ? val + (inc - surplus)
-            : val < max - inc
-            ? val + inc
-            : (new_value = max);
-        break;
-      default:
-        break;
-    }
-  } else {
-    switch (btn_value) {
-      case "empty":
+  switch (btn_value) {
+    case "empty":
+      if (!smallScreen) {
         stepper.classList.remove("empty");
         new_value = inc;
-        break;
-      case "incart":
-        stepper.classList.remove("incart");
-        //      new_value += inc;
-        break;
-      case "decrease":
-        new_value = surplus ? val - surplus : val >= inc ? val - inc : min;
-        break;
-      case "increase":
+      }
+      break;
+    case "incart":
+      stepper.classList.remove("incart");
+      break;
+    case "decrease":
+      new_value = surplus ? val - surplus : val >= inc ? val - inc : min;
+      break;
+    case "increase":
+      if (max) {
         new_value =
-          surplus && val < max
+          surplus && val < max //if there's surplus, adjust accordingly
             ? val + (inc - surplus)
-            : val < max - inc
+            : val < max - inc //is less than max, continue adding
             ? val + inc
-            : (new_value = max);
-        break;
-      default:
-        break;
-    }
+            : max; //max reached
+      } else {
+        //without max continue adding
+        new_value = surplus ? val + (inc - surplus) : val + inc;
+      }
+      break;
+    default:
+      break;
   }
+
   addToCart(prod_id, new_value);
 };
 
-const roundQUp = (val, inc, max = 100) => {
+const roundQUp = (val, inc, max) => {
   val = parseInt(val);
+  let new_value;
   const surplus = val % inc;
-  const new_value = surplus && val < max ? val + (inc - surplus) : val;
+  if (max) {
+    new_value = surplus && val < max ? val + (inc - surplus) : val;
+  } else {
+    new_value = surplus ? val + (inc - surplus) : val;
+  }
   return new_value;
 };
 

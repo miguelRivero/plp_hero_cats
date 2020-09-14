@@ -379,6 +379,7 @@ document.onreadystatechange = function () {
     const scrollListener = () => {
       toggleStickySlider();
       checkSectionsAreIntoView();
+      //Check product card/list gets outside viewport
       checkProductIntoView();
     };
 
