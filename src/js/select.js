@@ -83,7 +83,12 @@ function getBaseURL() {
 
 const getCurrentTechnologyUrl = (url) => {
   let currUrl = url ? url : window.location.href.replace(location.hash, "");
-  return currUrl.substring(currUrl.lastIndexOf("/") + 1);
+  const tech = currUrl.substring(currUrl.lastIndexOf("/") + 1);
+  if (tech === "vertuo") {
+    return tech;
+  } else {
+    return "original";
+  }
 };
 
 export { setSelectValues, createTechnologiesDropdown, getCurrentTechnologyUrl };

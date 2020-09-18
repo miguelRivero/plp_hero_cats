@@ -44,10 +44,7 @@ document.onreadystatechange = function () {
       product_list_groups = document.querySelectorAll(".ProductListGroup"),
       imagesStorage = "/shared_res/agility/ABtests/coffee-plp/images/",
       techDirectory = getCurrentTechnologyUrl(),
-      imagesTechDirectory =
-        techDirectory || techDirectory !== "" ? techDirectory : "original",
-      imagePlaceholder =
-        imagesStorage + imagesTechDirectory + "/placeholder.jpg",
+      imagePlaceholder = imagesStorage + techDirectory + "/placeholder.jpg",
       technologiesElement = document.querySelector(".ProductListTechnologies")
         ? document.querySelector(".ProductListTechnologies")
         : false;
@@ -59,6 +56,7 @@ document.onreadystatechange = function () {
       tabs_display_style,
       categories = [],
       smartBanner = document.querySelector(".smartbanner"),
+      topDelBanner = document.querySelector(".topDelBan"),
       dynamicBanner = document.querySelector(".dynamic_banner"),
       headerTopWrapper = document.querySelector(".Header__top-wrapper"),
       sliderLayoutEvent = new CustomEvent("slider-sticky-state", {
@@ -105,7 +103,7 @@ document.onreadystatechange = function () {
       categories = getCategories(
         product_list_groups,
         imagesStorage,
-        imagesTechDirectory
+        techDirectory
       );
       return `
     <div class="ProductListNavigation">
@@ -178,6 +176,9 @@ document.onreadystatechange = function () {
       smartBanner = smartBanner
         ? smartBanner
         : document.querySelector(".smartbanner");
+      topDelBanner = topDelBanner
+        ? topDelBanner
+        : document.querySelector(".topDelBan");
       dynamicBanner = dynamicBanner
         ? dynamicBanner
         : document.querySelector(".dynamic_banner");
@@ -187,6 +188,7 @@ document.onreadystatechange = function () {
 
       const filtered_args = [
           smartBanner,
+          topDelBanner,
           dynamicBanner,
           headerTopWrapper,
         ].filter(function (el) {

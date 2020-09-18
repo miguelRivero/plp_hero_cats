@@ -218,7 +218,7 @@ a.ProductListTechnologies__link {
       display: none;
     }
     .ProductListCategoriesSlider {
-      padding: 0 20px;
+      padding: 0 12px;
       width: 100%;
       .glider-track {
         margin-left: 0;
@@ -515,6 +515,7 @@ a.ProductListTechnologies__link {
               }
               .ProductListCategoriesSlider__arrow--left {
                 padding-left: 0;
+                min-width: 12px;
               }
             }
           }
