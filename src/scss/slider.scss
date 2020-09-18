@@ -376,6 +376,15 @@ a.ProductListTechnologies__link {
   border: 1px solid transparent;
   transition: border 0.25s ease;
   margin: 0 auto;
+  & > div {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-color: #f6f4f2;
+    width: 72px;
+    height: 72px;
+    border-radius: 100%;
+  }
 }
 
 .ProductListCategoriesSlider__item__title {
@@ -550,6 +559,10 @@ a.ProductListTechnologies__link {
         height: 32px;
         width: 32px;
         padding: 0;
+        & > div {
+          width: 100%;
+          height: 100%;
+        }
       }
       .ProductListCategoriesSlider__item__title {
         padding: 0 8px;

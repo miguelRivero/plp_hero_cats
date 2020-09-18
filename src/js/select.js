@@ -35,18 +35,16 @@ function createTechnologiesDropdown() {
     option.setAttribute("value", val.value);
     var label = document.createTextNode(val.label);
     option.appendChild(label);
-    document
-      .getElementById("ProductListTechnologiesDropdown__select")
-      .appendChild(option);
+    sel.appendChild(option);
   }
 
-  addDropdownListener();
+  addDropdownListener(sel);
 }
 
-function addDropdownListener() {
-  const select = document.getElementById(
-    "ProductListTechnologiesDropdown__select"
-  );
+function addDropdownListener(select) {
+  // const select = document.getElementById(
+  //   "ProductListTechnologiesDropdown__select"
+  // );
   const custom = document.getElementsByClassName(
     "ProductListTechnologiesDropdown"
   )[0];
@@ -74,7 +72,7 @@ function addDropdownListener() {
 
 function getBaseURL() {
   let _url = window.location.href.replace(location.hash, "");
-  const lastItem = _url.substring(_url.lastIndexOf("/") + 1);
+  const lastItem = getCurrentTechnologyUrl(_url);
   for (const val of select_values) {
     if (val.value === lastItem) {
       _url = _url.substring(0, _url.lastIndexOf("/"));
@@ -83,7 +81,12 @@ function getBaseURL() {
   return _url;
 }
 
-export { setSelectValues, createTechnologiesDropdown };
+const getCurrentTechnologyUrl = (url) => {
+  let currUrl = url ? url : window.location.href.replace(location.hash, "");
+  return currUrl.substring(currUrl.lastIndexOf("/") + 1);
+};
+
+export { setSelectValues, createTechnologiesDropdown, getCurrentTechnologyUrl };
 // ==============================
 // ==END SELECT COMPONENT==
 // ==============================

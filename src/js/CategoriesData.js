@@ -21,7 +21,7 @@ const parseTitleAsArray = (arr) => {
   }
   return arr;
 };
-const getCategories = (product_list_groups, imagesStorage) => {
+const getCategories = (product_list_groups, imagesStorage, imagesTechDir) => {
   let result = [];
   if (product_list_groups.length) {
     product_list_groups.forEach((productGroup) => {
@@ -37,7 +37,7 @@ const getCategories = (product_list_groups, imagesStorage) => {
       result.push({
         label: title,
         labelAsArray: titleAsArray,
-        image: imagesStorage + text_id + ".jpg",
+        image: imagesStorage + imagesTechDir + "/" + text_id + ".jpg",
         id: id,
       });
     });

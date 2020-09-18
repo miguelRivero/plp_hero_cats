@@ -13,11 +13,16 @@
 /* global $ */
 
 require("file-loader?name=[name].[ext]!./index.html");
-var projectName = require("glider-js");
+var gliderJs = require("glider-js");
 var CustomSelect = require("vanilla-js-dropdown");
 import "./scss/slider.scss";
 import throttle from "raf-throttle";
-import { setSelectValues, createTechnologiesDropdown } from "./js/Select.js";
+//import throttle2 from "lodash/throttle";
+import {
+  setSelectValues,
+  createTechnologiesDropdown,
+  getCurrentTechnologyUrl,
+} from "./js/Select.js";
 import { getCategories } from "./js/CategoriesData.js";
 import {
   setSlidesElement,
@@ -37,9 +42,12 @@ document.onreadystatechange = function () {
     const products_title = ".ProductList__title",
       productsTitleElement = document.querySelector(products_title),
       product_list_groups = document.querySelectorAll(".ProductListGroup"),
-      imagesStorage =
-        "https://raw.githubusercontent.com/miguelRivero/plp_hero_cats/master/dist/images/",
-      imagePlaceholder = imagesStorage + "placeholder.jpg",
+      imagesStorage = "/shared_res/agility/ABtests/coffee-plp/images/",
+      techDirectory = getCurrentTechnologyUrl(),
+      imagesTechDirectory =
+        techDirectory || techDirectory !== "" ? techDirectory : "original",
+      imagePlaceholder =
+        imagesStorage + imagesTechDirectory + "/placeholder.jpg",
       technologiesElement = document.querySelector(".ProductListTechnologies")
         ? document.querySelector(".ProductListTechnologies")
         : false;
@@ -94,7 +102,11 @@ document.onreadystatechange = function () {
 
     //Creating the slider markup
     function addProductListNavigationComponent() {
-      categories = getCategories(product_list_groups, imagesStorage);
+      categories = getCategories(
+        product_list_groups,
+        imagesStorage,
+        imagesTechDirectory
+      );
       return `
     <div class="ProductListNavigation">
       <div class="ProductListTechnologiesDropdown"></div>
@@ -112,11 +124,11 @@ document.onreadystatechange = function () {
             }" data-link="${category.id}" data-index="${index}">
               <a href="#${category.id}">
                 <div class="ProductListCategoriesSlider__item__button">
-                  <img class="ProductListCategoriesSlider__item__image" src="${
-                    category.image
-                  }" onerror="this.src='${imagePlaceholder}'" alt="${
-                  category.label
-                }">
+                  <div class="ProductListCategoriesSlider__item__image">
+                    <div style="background-image: url(${
+                      category.image
+                    }), url(${imagePlaceholder})"></div>
+                  </div>
                   <div class="ProductListCategoriesSlider__item__title multiline">
                   ${category.labelAsArray
                     .map(
@@ -364,7 +376,7 @@ document.onreadystatechange = function () {
         }
       }
       cur = cur[cur.length - 1];
-      var id = cur && cur.length ? cur[0].id : "";
+      let id = cur && cur.length ? cur[0].id : null;
       setBtnActive(id);
     };
 
@@ -372,7 +384,7 @@ document.onreadystatechange = function () {
       btns.forEach((btn, i) => {
         btn.classList.remove("custom-active");
         const link = btn.getAttribute("data-link");
-        if (id === link) {
+        if (id && id === link) {
           btn.classList.add("custom-active");
           glider.scrollItem(i > 0 ? i - 1 : 0);
           updateURL(link);
