@@ -3,13 +3,12 @@
 // ================================
 let select_values;
 
-const setSelectValues = (el) => {
-  select_values = getTechnologiesData(el);
+const setSelectValues = (el, activeTech) => {
+  select_values = getTechnologiesData(el, activeTech);
 };
 
-function getTechnologiesData(tech) {
+function getTechnologiesData(tech, active) {
   let result = [];
-
   if (tech.length) {
     for (const technology of tech) {
       const title = technology
@@ -19,6 +18,7 @@ function getTechnologiesData(tech) {
       result.push({
         label: title,
         value: id,
+        active: active === id,
       });
     }
   }
@@ -33,6 +33,7 @@ function createTechnologiesDropdown() {
   for (let val of select_values) {
     const option = document.createElement("option");
     option.setAttribute("value", val.value);
+    if (val.active) option.setAttribute("selected", "");
     var label = document.createTextNode(val.label);
     option.appendChild(label);
     sel.appendChild(option);

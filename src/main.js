@@ -295,7 +295,8 @@ document.onreadystatechange = function () {
       } else {
         // show dropdown and listen to sticky state to hide/show technologies tabs
         setSelectValues(
-          document.querySelectorAll(".ProductListTechnologies__link")
+          document.querySelectorAll(".ProductListTechnologies__link"),
+          techDirectory
         );
         createTechnologiesDropdown();
         const select = new CustomSelect({
